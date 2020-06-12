@@ -14,6 +14,7 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 #include <ctype.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <errno.h>
 
