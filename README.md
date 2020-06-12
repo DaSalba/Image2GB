@@ -8,7 +8,7 @@ Install
 `Game-Boy.gpl` is a GIMP color palette that containts the 4 colors the original
 Game Boy uses. To install it, either copy the file yourself to the directory
 `$HOME/.config/GIMP/<VERSION>/palettes/` on Linux
-(`C:\Users\<user>\AppData\Roaming\GIMP\<version>\palettes\` on Windows), or run
+(`C:\Users\<USER>\AppData\Roaming\GIMP\<VERSION>\palettes\` on Windows), or run
 GIMP, choose *Windows->Dockable Dialogs->Palettes* to open the palette list in
 the right side menu bar. Then, right-click the list and choose
 *Import Palette...*, and choose *Palette file* as the source. Point to the .gpl
@@ -22,8 +22,9 @@ Create image
 2. *Image->Mode->Indexed...* and choose *Use custom palette*
 3. Select *Game Boy (4)*, which should be at the beginning of the list.
 4. Click *[Convert]*.
-5. Right click the Game Boy palette in the list, select *Edit Palette...*. A new
-   tab (Palette Editor) should open next to the Palettes one.
+5. Open the palette list (*Windows->Dockable Dialogs->Palettes*), right click
+   the Game Boy palette in the list, select *Edit Palette...*. A new tab
+   (Palette Editor) should open next to the Palettes one.
 6. You should now see the 4 colors and their names, click *[Zoom all]* to make
    them bigger (the *[: :]* button to the right of the *+* one).
 
@@ -38,7 +39,7 @@ size 1 to paint single pixels.
 Try not to make the image too complex. The Game Boy's video memory has space for
 128 sprite tiles, 128 background tiles, and 128 shared by both. That is, you can
 have up to 256 background tiles at any moment (384 using a hack), yet a full
-sized image with no duplicate tiles would need 360.
+sized image (160x144 pixels) with no duplicate tiles would need 360.
 
 
 Import image
@@ -72,14 +73,29 @@ It will automatically compile the plugin and copy it to
 Windows
 -------
 
-The procedure is the same, but the binary is in `C:\Program Files\GIMP 2\bin\`:
+The procedure is the same, but it requires you to install and configure both
+MSYS2 and MinGW, which is a hassle. The binary in `C:\Program Files\GIMP 2\bin\`
+will not work, complaining about "pkg-config not found":
 
 	.\gimptool-2.0.exe --install .\image2gb.c
 
+Linux would be my choice. If you still want to do it, the steps are:
+
+1. Download and install [MSYS2](https://www.msys2.org/) (follow instructions to
+   update it).
+2. Run MSYS2 MinGW (32 or 64-bit according to your OS).
+3. Run:
+
+	`pacman -S mingw-w64-x86_64-gimp mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config`
+
+4. Copy the .h and .c files to `C:\msys64\home\<USER>\`.
+5. Run `gimptool-2.0.exe --install ./image2gb.c` to build and install.
+
 It will compile the plugin and place it in
-`C:\Users\<user>\AppData\Roaming\GIMP\<version>\plug-ins\`. The problem is, this
-requires you to install and configure both Cygwin and MinGW, which is a hassle,
-so Linux would be my choice.
+`C:\Users\<USER>\AppData\Roaming\GIMP\<VERSION>\plug-ins\`. If GCC fails with
+some message saying "No such file or directory", copy the full command (with all
+GCC options) and replace the compiler binary (e.g. `x86_64-w64-mingw32-gcc`) for
+just `gcc` and it should work.
 
 Usage
 -----
