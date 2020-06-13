@@ -21,11 +21,12 @@ Create image
 1. Create a new image, 160x144 (or 256x256 maximum).
 2. *Image->Mode->Indexed...* and choose *Use custom palette*
 3. Select *Game Boy (4)*, which should be at the beginning of the list.
-4. Click *[Convert]*.
-5. Open the palette list (*Windows->Dockable Dialogs->Palettes*), right click
+4. Be sure to **uncheck _Remove unused and duplicate colors from colormap_**!
+5. Click *[Convert]*.
+6. Open the palette list (*Windows->Dockable Dialogs->Palettes*), right click
    the Game Boy palette in the list, select *Edit Palette...*. A new tab
    (Palette Editor) should open next to the Palettes one.
-6. You should now see the 4 colors and their names, click *[Zoom all]* to make
+7. You should now see the 4 colors and their names, click *[Zoom all]* to make
    them bigger (the *[: :]* button to the right of the *+* one).
 
 ![GIMP interface](GIMP.png "GIMP interface, with palette tabs")
@@ -48,6 +49,8 @@ Import image
 If you want to use an existing image, my recommendation is that you fist convert
 it to 4-color indexed mode using the palette (make sure you enable good quality
 dithering), then downsize it using cubic interpolation or some other algorithm.
+If you copy from another image, be sure to use *Image->Flatten Image* to merge
+all layers.
 
 
 Plugin
@@ -83,7 +86,7 @@ Linux would be my choice. If you still want to do it, the steps are:
 
 1. Download and install [MSYS2](https://www.msys2.org/) (follow instructions to
    update it).
-2. Run MSYS2 MinGW (32 or 64-bit according to your OS).
+2. Run MSYS2 MinGW (32 or 64-bit according to your OS, the next steps use 64).
 3. Run:
 
 	`pacman -S mingw-w64-x86_64-gimp mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config`
@@ -130,3 +133,29 @@ To use them in your game with GBDK:
 
 The syntax and code formatting follow the same conventions I use in my source
 code, but it is very easy to modify if you want to.
+
+
+Troubleshooting
+===============
+
+**Q:** GIMP does not let me paint on the image after converting it to indexed
+       mode.
+
+**A:** Did you forget to uncheck
+       *Remove unused and duplicate colors from colormap*? If checked, GIMP
+       seems to remove all but the background color, so you can't paint other
+       colors, and you can't export either.
+
+**Q:** I can't run the plugin, the menu option is greyed out.
+
+**A:** See error above. Also, sometimes GIMP seems to get "stuck" despite
+	   converting the image to indexed mode, and thinks it still is RGB. To fix
+	   that, create a new image following the instructions, make sure you can
+	   export it, then copy the other one and paste. Remember to flatten the
+	   image to merge all layers. If the error persists, remove GIMP's config
+	   folder (in your $HOME).
+
+**Q:** Only the first 2/3 of the image is rendered OK, the rest is repetition.
+
+**A:** The image is too complex, and the plugin warned you when you exported it.
+       As I explained above, GB only supports up to 256 unique tiles.
