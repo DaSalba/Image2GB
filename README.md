@@ -91,7 +91,7 @@ Linux would be my choice. If you still want to do it, the steps are:
 
 	`pacman -S mingw-w64-x86_64-gimp mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config`
 
-4. Copy the .h and .c files to `C:\msys64\home\<USER>\`.
+4. Copy the .h and .c files to `C:\msys64\home\<USER>\` (for example).
 5. Run `gimptool-2.0.exe --install ./image2gb.c` to build and install.
 
 It will compile the plugin and place it in
@@ -123,9 +123,9 @@ everything else needed.
 To use them in your game with GBDK:
 
 	// Load the tile data (GAME_BACKGROUNDS_NAME_TILES equals the actual number of tiles).
-	set_bkg_data(0U, GAME_BACKGROUNDS_NAME_TILES, BkgName);
+	set_bkg_data(0U, GAME_BACKGROUNDS_NAME_TILES, BkgDataName);
 	// Draw the map to the whole screen (a tile is 8x8).
-	set_bkg_tiles(0U, 0U, GAME_BACKGROUNDS_NAME_SIZE_X, GAME_BACKGROUNDS_NAME_SIZE_Y, MapName);
+	set_bkg_tiles(0U, 0U, GAME_BACKGROUNDS_NAME_SIZE_X, GAME_BACKGROUNDS_NAME_SIZE_Y, BkgMapName);
 	// Show the background layer.
 	SHOW_BKG;
 	// Turn the display on.
@@ -138,24 +138,24 @@ code, but it is very easy to modify if you want to.
 Troubleshooting
 ===============
 
-**Q:** GIMP does not let me paint on the image after converting it to indexed
-       mode.
+**Q1:** GIMP does not let me paint on the image after converting it to indexed
+        mode.
 
-**A:** Did you forget to uncheck
-       *Remove unused and duplicate colors from colormap*? If checked, GIMP
-       seems to remove all but the background color, so you can't paint other
-       colors, and you can't export either.
+**A1:** Did you forget to uncheck
+        *Remove unused and duplicate colors from colormap*? If checked, GIMP
+        seems to remove all but the background color, so you can't paint other
+        colors, and you can't export either.
 
-**Q:** I can't run the plugin, the menu option is greyed out.
+**Q2:** I can't run the plugin, the menu option is greyed out.
 
-**A:** See error above. Also, sometimes GIMP seems to get "stuck" despite
-	   converting the image to indexed mode, and thinks it still is RGB. To fix
-	   that, create a new image following the instructions, make sure you can
-	   export it, then copy the other one and paste. Remember to flatten the
-	   image to merge all layers. If the error persists, remove GIMP's config
-	   folder (in your $HOME).
+**A2:** See error above. Also, sometimes GIMP seems to get "stuck" despite
+        converting the image to indexed mode, and thinks it still is RGB. To fix
+        that, create a new image following the instructions, make sure you can
+        export it, then copy the other one and paste. Remember to flatten the
+        image to merge all layers. If the error persists, remove GIMP's config
+        folder (in your $HOME).
 
-**Q:** Only the first 2/3 of the image is rendered OK, the rest is repetition.
+**Q3:** Only the first 2/3 of the image is rendered OK, the rest is repetition.
 
-**A:** The image is too complex, and the plugin warned you when you exported it.
-       As I explained above, GB only supports up to 256 unique tiles.
+**A3:** The image is too complex, and the plugin warned you when you exported
+        it. As I explained above, GB only supports up to 256 unique tiles.
