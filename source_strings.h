@@ -38,11 +38,11 @@
 \n\
 /** %s (data), exported by Image2GB for use with GBDK.\n\
  */\n\
-extern const unsigned char Bkg%s[];\n\
+extern const unsigned char BkgData%s[];\n\
 \n\
 /** %s (map), exported by Image2GB for use with GBDK.\n\
  */\n\
-extern const unsigned char Map%s[];\n\
+extern const unsigned char BkgMap%s[];\n\
 \n\
 #endif // GAME_GRAPHICS_BACKGROUNDS_%s_H_INCLUDED"
 
@@ -63,7 +63,7 @@ extern const unsigned char Map%s[];\n\
 \n\
 // VARIABLES ///////////////////////////////////////////////////////////////////\n\
 \n\
-const unsigned char Bkg%s[] =\n\
+const unsigned char BkgData%s[] =\n\
 {\n"
 
 /** String that stores part 2 of a premade .c source of a GBDK image asset,
@@ -71,7 +71,7 @@ const unsigned char Bkg%s[] =\n\
  */
 #define IMAGE2GB_SOURCE_STRING_C_2 "};\n\
 \n\
-const unsigned char Map%s[] =\n\
+const unsigned char BkgMap%s[] =\n\
 {\n"
 
 #endif // IMAGE2GB_SOURCE_STRINGS_H_INCLUDED
