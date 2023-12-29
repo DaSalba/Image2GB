@@ -70,7 +70,8 @@ To install the plugin, just run this command in this folder:
 	gimptool-2.0 --install image2gb.c
 
 It will automatically compile the plugin and copy it to
-`$HOME/.config/GIMP/<VERSION>/plug-ins/`.
+`$HOME/.config/GIMP/<VERSION>/plug-ins/`. If get a "command not found" error,
+make sure you have `libgimp2.0-dev` installed on your system.
 
 
 Windows
@@ -78,7 +79,8 @@ Windows
 
 The procedure is the same, but it requires you to install and configure both
 MSYS2 and MinGW, which is a hassle. The binary in `C:\Program Files\GIMP 2\bin\`
-will not work, complaining about "pkg-config not found":
+will not work, complaining about "pkg-config not found". Try the following
+command and see for yourself:
 
 	.\gimptool-2.0.exe --install .\image2gb.c
 
