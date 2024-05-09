@@ -1,8 +1,8 @@
-1. Palette
-==========
+Palette
+=======
 
-1.1 Install
------------
+Install
+-------
 
 `Game-Boy.gpl` is a GIMP color palette that contains the 4 colors the original
 Game Boy console uses. To install it, either copy the file yourself (to the
@@ -13,8 +13,8 @@ the right side menu bar. Then, right-click the list and choose
 *Import Palette...*, and choose *Palette file* as the source. Point to the .gpl
 file and click *[Import]*.
 
-1.2 Create image
-----------------
+Create image
+------------
 
 1. Create a new image, 160x144 pixels in size (or 256x256 maximum).
 2. *Image->Mode->Indexed...* and choose *Use custom palette*
@@ -40,8 +40,8 @@ Try not to make the image too complex. The Game Boy's video memory has space for
 have up to 256 background tiles at any moment (384 using a hack), yet a full
 sized image (160x144 pixels) with no duplicate tiles would need 360.
 
-1.3 Import image
-----------------
+Import image
+------------
 
 If you want to use an existing image, my recommendation is that you fist convert
 it to 4-color indexed mode using the palette (make sure you enable good quality
@@ -49,8 +49,8 @@ dithering), then downsize it using cubic interpolation or some other algorithm.
 If you copy from another image, be sure to use *Image->Flatten Image* to merge
 all layers.
 
-2. Plugin
-=========
+Plugin
+======
 
 `Image2GB` is a GIMP plugin that allows to export an image directly to GBDK
 (Game Boy Development Kit) format, e.g. in order to create assets for use with
@@ -63,8 +63,8 @@ the most recent [GBDK-2020](https://github.com/gbdk-2020/gbdk-2020). The only
 
 They are all trivial to meet using GIMP and the previous palette.
 
-2.1 Linux
----------
+Linux
+-----
 
 To install the plugin, just run this command in this folder:
 
@@ -75,8 +75,8 @@ It will automatically compile the plugin and copy it to
 make sure you have `libgimp2.0-dev` (`gimp-devel-tools` on Fedora) installed on
 your system.
 
-2.2 Windows
------------
+Windows
+-------
 
 The procedure is the same, but it requires you to install and configure both
 MSYS2 and MinGW, which is a hassle. The binary in `C:\Program Files\GIMP 2\bin\`
@@ -103,8 +103,8 @@ some message saying "No such file or directory", copy the full command (with all
 GCC options) and replace the compiler binary (e.g. `x86_64-w64-mingw32-gcc`) for
 just `gcc` and it should work.
 
-2.3 Usage
----------
+Usage
+-----
 
 Start GIMP, create or load an indexed 4-color image using the Game Boy palette,
 make sure it is 256x256 or smaller, and export it. You have 2 options (both give
@@ -141,8 +141,8 @@ before trying to load the background.
 The syntax and code formatting follow the same conventions I use in my source
 code, but it is very easy to modify if you want to.
 
-3. Troubleshooting
-==================
+Troubleshooting
+===============
 
 **Q1:** GIMP does not let me paint on the image after converting it to indexed
         mode.
