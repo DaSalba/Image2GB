@@ -1,6 +1,6 @@
 /**
  * @file image_export.h
- * @brief Functionality for exporting a GIMP indexed image to Game Boy data. (header+implementation)
+ * @brief Functionality for exporting a GIMP indexed image to Game Boy data - header + implementation.
  */
 
 #ifndef IMAGE2GB_IMAGE_EXPORT_H_INCLUDED
@@ -150,7 +150,7 @@ image2gb_read_image_tiles(gint32 IimageID, gint32 IdrawableID)
 			                        
 			// Call this other function which will parse and store that tile.
 			// "array + n" gets the address of the nth element of the array.
-			image2gb_read_tile(imageTile, ArrayDataTiles + ((row * UItileWidth) + col));
+			image2gb_read_tile(&imageTile, ArrayDataTiles + ((row * UItileWidth) + col));
 		}
 	}
 }
