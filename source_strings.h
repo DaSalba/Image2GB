@@ -1,6 +1,6 @@
 /**
  * @file source_strings.h
- * @brief Premade strings containing C source code for an image asset in GBDK. (header)
+ * @brief Premade strings containing C source code for an image asset in GBDK - header.
  */
 
 #ifndef IMAGE2GB_SOURCE_STRINGS_H_INCLUDED
@@ -13,7 +13,7 @@
  */
 #define IMAGE2GB_SOURCE_STRING_H "/**\n\
  * @file %s%s\n\
- * @brief %s, exported by Image2GB for use with GBDK. (header)\n\
+ * @brief %s, exported by Image2GB for use with GBDK - header.\n\
  *\n\
  * Unique tiles  : %u\n\
  * Total tiles   : %u\n\
@@ -31,18 +31,17 @@
 #define GAME_BACKGROUNDS_%s_TILES %uU /**< Data size of this background, in unique tiles. */\n\
 \n\
 #define GAME_BACKGROUNDS_%s_SIZE_X %uU /**< Width of this background, in tiles (1 tile = 8x8 pixels). */\n\
-\n\
 #define GAME_BACKGROUNDS_%s_SIZE_Y %uU /**< Height of this background, in tiles (1 tile = 8x8 pixels). */\n\
 \n\
 // VARIABLES ///////////////////////////////////////////////////////////////////\n\
 \n\
 /** %s (data), exported by Image2GB for use with GBDK.\n\
  */\n\
-extern const unsigned char BkgData%s[];\n\
+extern const unsigned char BackgroundData%s[];\n\
 \n\
 /** %s (map), exported by Image2GB for use with GBDK.\n\
  */\n\
-extern const unsigned char BkgMap%s[];\n\
+extern const unsigned char BackgroundMap%s[];\n\
 \n\
 #endif // GAME_GRAPHICS_BACKGROUNDS_%s_H_INCLUDED"
 
@@ -51,7 +50,7 @@ extern const unsigned char BkgMap%s[];\n\
  */
 #define IMAGE2GB_SOURCE_STRING_C_1 "/**\n\
  * @file %s%s\n\
- * @brief %s, exported by Image2GB for use with GBDK. (implementation)\n\
+ * @brief %s, exported by Image2GB for use with GBDK - implementation.\n\
  *\n\
  * Unique tiles  : %u\n\
  * Total tiles   : %u\n\
@@ -63,7 +62,7 @@ extern const unsigned char BkgMap%s[];\n\
 \n\
 // VARIABLES ///////////////////////////////////////////////////////////////////\n\
 \n\
-const unsigned char BkgData%s[] =\n\
+const unsigned char BackgroundData%s[] =\n\
 {\n"
 
 /** String that stores part 2 of a premade .c source of a GBDK image asset,
@@ -71,7 +70,7 @@ const unsigned char BkgData%s[] =\n\
  */
 #define IMAGE2GB_SOURCE_STRING_C_2 "};\n\
 \n\
-const unsigned char BkgMap%s[] =\n\
+const unsigned char BackgroundMap%s[] =\n\
 {\n"
 
 #endif // IMAGE2GB_SOURCE_STRINGS_H_INCLUDED
