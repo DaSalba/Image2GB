@@ -1,6 +1,6 @@
 /**
  * @file image2gb.h
- * @brief GIMP plugin to export an image to Game Boy data (C code, for use with GBDK). (header)
+ * @brief GIMP plugin to export an image to Game Boy data (C code, for use with GBDK) - header.
  */
 
 #ifndef IMAGE2GB_H_INCLUDED
@@ -21,8 +21,8 @@
 #define IMAGE2GB_DESCRIPTION_SHORT "Export image to Game Boy data"
 #define IMAGE2GB_DESCRIPTION_LONG  "Exports an indexed 4-color image to Game Boy data (C code, for use with GBDK)."
 #define IMAGE2GB_AUTHOR            "DaSalba"
-#define IMAGE2GB_COPYRIGHT         "Copyright (c) 2020 DaSalba"
-#define IMAGE2GB_DATE              "2020"
+#define IMAGE2GB_COPYRIGHT         "Copyright (c) 2020-2024 DaSalba"
+#define IMAGE2GB_DATE              "2024"
 #define IMAGE2GB_MENU_NAME         "Game Boy (GBDK)" /**< Entry that will appear in the menus and "Export as" dialog. */
 #define IMAGE2GB_IMAGE_TYPES       "INDEXED"         /**< What type of images the plugin supports (RGB, GRAY, INDEXED...). */
 #define IMAGE2GB_MENU_PATH         "<Image>/Tools"   /**< Category, and menu path the plugin will appear in. */
