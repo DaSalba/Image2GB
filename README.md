@@ -63,6 +63,10 @@ the most recent [GBDK-2020](https://github.com/gbdk-2020/gbdk-2020). The only
 
 They are all trivial to meet using GIMP and the previous palette.
 
+There are precompiled releases of this plugin available
+[here](https://github.com/DaSalba/Image2GB/releases). If you prefer to compile
+it yourself, see the next two sections.
+
 Linux
 -----
 
