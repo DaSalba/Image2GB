@@ -1,27 +1,30 @@
 Palette
 =======
 
+`Game-Boy.gpl` is a GIMP color palette that contains the 4 colors the original
+Game Boy console uses.
+
 Install
 -------
 
-`Game-Boy.gpl` is a GIMP color palette that contains the 4 colors the original
-Game Boy console uses. To install it, either copy the file yourself (to the
-directory `$HOME/.config/GIMP/<VERSION>/palettes/` on Linux, or
+To install it, either copy the file yourself (to the directory
+`$HOME/.config/GIMP/<VERSION>/palettes/` on Linux, or
 `C:\Users\<USER>\AppData\Roaming\GIMP\<VERSION>\palettes\` on Windows), or run
-GIMP, choose *Windows->Dockable Dialogs->Palettes* to open the palette list in
-the right side menu bar. Then, right-click the list and choose
-*Import Palette...*, and choose *Palette file* as the source. Point to the .gpl
+GIMP, activate menu *Windows->Dockable Dialogs->Palettes* to open the palette
+list in the right side bar, and then right-click the list and choose
+*Import Palette...*, and select *Palette file* as the source. Point to the .gpl
 file and click *[Import]*.
 
 Create image
 ------------
 
-1. Create a new image, 160x144 pixels in size (or 256x256 maximum).
-2. *Image->Mode->Indexed...* and choose *Use custom palette*
-3. Select *Game Boy (4)*, which should be at the beginning of the list.
+1. Create a new image, sizes multiples of 8 pixels, 256x256 maximum (the GB
+   screen is 160x144).
+2. *Image->Mode->Indexed...* and choose *Use custom palette*.
+3. Select *Game Boy (4)*, which should be at the beginning of the palette list.
 4. Be sure to **uncheck _Remove unused and duplicate colors from colormap_**!
 5. Click *[Convert]*.
-6. Open the palette list (*Windows->Dockable Dialogs->Palettes*), right click
+6. Open the palette menu (*Windows->Dockable Dialogs->Palettes*), right click
    the Game Boy palette in the list, select *Edit Palette...*. A new tab
    (Palette Editor) should open next to the Palettes one.
 7. You should now see the 4 colors and their names, click *[Zoom all]* to make
@@ -31,9 +34,9 @@ Create image
 
 You can click any color to choose it as foreground color and paint on the image.
 I recommend enabling the grid (*View->Show Grid*, if it is not the right size,
-go to *Edit->Preferences*, *Default Grid*, and set both
-*Horizontal and Vertical Spacing* to 1 pixel), and to use the Pencil Tool with
-size 1 to paint single pixels.
+go to *Edit->Preferences*, *Default Image->Default Grid*, and set both
+*Horizontal and Vertical Spacing* to 1 pixel), and to use the Pencil Tool (`N`)
+with brush number 1 (single-pixel brush).
 
 Try not to make the image too complex. The Game Boy's video memory has space for
 128 sprite tiles, 128 background tiles, and 128 shared by both. That is, you can
@@ -57,8 +60,8 @@ Plugin
 the most recent [GBDK-2020](https://github.com/gbdk-2020/gbdk-2020). The only
 **image prerequisites** are that:
 
-1. It must not be bigger than 256x256 pixels.
-2. Sizes must be multiples of 8.
+1. Sizes must be multiples of 8 (as a GB tile is 8x8 pixels).
+2. It must not be bigger than 256x256 pixels.
 3. It must be an indexed, 4-color image.
 
 They are all trivial to meet using GIMP and the previous palette.
@@ -127,7 +130,7 @@ and set the ROM bank number (0 for no bank). Click *[Export]*. The plugin will
 produce two files, a .h header and a .c source file, containing the asset and
 everything else needed.
 
-To use them in your game with GBDK:
+To load it in your game with GBDK, add the files to your project and:
 
 	// Load the tile data (GAME_BACKGROUNDS_NAME_TILES equals the actual number of tiles).
 	set_bkg_data(0U, GAME_BACKGROUNDS_NAME_TILES, BackgroundDataName);
@@ -143,7 +146,8 @@ it (with `SWITCH_ROM(GAME_BANK_ROM_GRAPHICS_BACKGROUNDS_NAME)` for example)
 before trying to load the background.
 
 The syntax and code formatting follow the same conventions I use in my source
-code, but it is very easy to modify if you want to.
+code, but it is very easy to modify if you want to. Edit `source_strings.h` to
+suit your needs.
 
 Troubleshooting
 ===============
@@ -169,3 +173,5 @@ Troubleshooting
 
 **A3:** The image is too complex, and the plugin warned you when you exported
         it. As I explained above, GB only supports up to 256 unique tiles.
+        Search for "Game Boy tile overlap hack" to see how to get past that
+        limit.
