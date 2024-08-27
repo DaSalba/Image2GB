@@ -12,21 +12,24 @@
  *  format specifiers, ready to get sent to printf.
  */
 #define IMAGE2GB_SOURCE_STRING_H "/**\n\
- * @file %s%s\n\
+ * @file  %s.h\n\
  * @brief %s, exported by Image2GB for use with GBDK - header.\n\
  *\n\
  * Unique tiles  : %u\n\
  * Total tiles   : %u\n\
  * Size (tiles)  : %ux%u\n\
  * Size (pixels) : %ux%u\n\
+ * Bank          : %u\n\
  */\n\
 \n\
-#ifndef GAME_GRAPHICS_BACKGROUNDS_%s_H_INCLUDED\n\
-#define GAME_GRAPHICS_BACKGROUNDS_%s_H_INCLUDED\n\
+#ifndef SOURCE_GRAPHICS_BACKGROUNDS_%s_H_INCLUDED\n\
+#define SOURCE_GRAPHICS_BACKGROUNDS_%s_H_INCLUDED\n\
+\n\
+%s#include <gb/gb.h>\n\
+\n\
+%sBANKREF_EXTERN(GAME_BACKGROUNDS_%s)\n\
 \n\
 // DEFINITIONS /////////////////////////////////////////////////////////////////\n\
-\n\
-%s#define GAME_BANK_ROM_GRAPHICS_BACKGROUNDS_%s %u /**< ROM bank where this background is stored. */\n\
 \n\
 #define GAME_BACKGROUNDS_%s_TILES %uU /**< Data size of this background, in unique tiles. */\n\
 \n\
@@ -43,22 +46,27 @@ extern const unsigned char BackgroundData%s[];\n\
  */\n\
 extern const unsigned char BackgroundMap%s[];\n\
 \n\
-#endif // GAME_GRAPHICS_BACKGROUNDS_%s_H_INCLUDED"
+#endif // SOURCE_GRAPHICS_BACKGROUNDS_%s_H_INCLUDED"
 
 /** String that stores part 1 of a premade .c source of a GBDK image asset,
  *  filled with format specifiers, ready to get sent to printf.
  */
 #define IMAGE2GB_SOURCE_STRING_C_1 "/**\n\
- * @file %s%s\n\
+ * @file  %s.c\n\
  * @brief %s, exported by Image2GB for use with GBDK - implementation.\n\
  *\n\
  * Unique tiles  : %u\n\
  * Total tiles   : %u\n\
  * Size (tiles)  : %ux%u\n\
  * Size (pixels) : %ux%u\n\
+ * Bank          : %u\n\
  */\n\
 \n\
-#include \"%s%s\"\n\
+#include \"%s.h\"\n\
+\n\
+%s#include <gb/gb.h>\n\
+\n\
+%sBANKREF(GAME_BACKGROUNDS_%s)\n\
 \n\
 // VARIABLES ///////////////////////////////////////////////////////////////////\n\
 \n\

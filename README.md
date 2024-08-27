@@ -30,7 +30,7 @@ Create image
 7. You should now see the 4 colors and their names, click *[Zoom all]* to make
    them bigger (the *[: :]* button to the right of the *+* one).
 
-![GIMP interface](GIMP.png "GIMP interface, with palette tabs")
+![GIMP palettes](GIMP_palettes.png "GIMP interface, with palette tabs")
 
 You can click any color to choose it as foreground color and paint on the image.
 I recommend enabling the grid (*View->Show Grid*, if it is not the right size,
@@ -94,8 +94,8 @@ command and see for yourself:
 
 Linux would be my choice. If you still want to do it, the steps are:
 
-1. Download and install [MSYS2](https://www.msys2.org/) (follow instructions to
-   update it).
+1. Download and install [MSYS2](https://www.msys2.org) (follow instructions to
+   [update it](https://www.msys2.org/docs/updating)).
 2. Run MSYS2 MinGW (32 or 64-bit according to your OS, the next steps use 64).
 3. Run:
 
@@ -105,10 +105,9 @@ Linux would be my choice. If you still want to do it, the steps are:
 5. Run `gimptool-2.0.exe --install ./image2gb.c` to build and install.
 
 It will compile the plugin and place it in
-`C:\Users\<USER>\AppData\Roaming\GIMP\<VERSION>\plug-ins\`. If GCC fails with
-some message saying "No such file or directory", copy the full command (with all
-GCC options) and replace the compiler binary (e.g. `x86_64-w64-mingw32-gcc`) for
-just `gcc` and it should work.
+`C:\Users\<USER>\AppData\Roaming\GIMP\<VERSION>\plug-ins\`. If it fails with
+some message saying "cannot open output file", copy the full GCC command (with
+all parameters), paste it at the command line, run it and it should work.
 
 Usage
 -----
@@ -123,12 +122,14 @@ the same final product):
    time you can just choose *File->Export to <NAME>.gbdk* or hit *CTRL+E* to
    export it again with the same options (quicker).
 
+![Export dialog](GIMP_export_dialog.png "GIMP export dialog of the plugin")
+
 In the self-explanatory plugin export dialog, just input the name you want for
 the asset (try to keep it short and a valid C identifier, it will be the base
 name for the variables), choose the destination folder by clicking the button,
-and set the ROM bank number (0 for no bank). Click *[Export]*. The plugin will
-produce two files, a .h header and a .c source file, containing the asset and
-everything else needed.
+and set the ROM bank number (0 for using the default bank). Click *[Export]*.
+The plugin will produce two files, a .h header and a .c source file, containing
+the asset and everything else needed.
 
 To load it in your game with GBDK, add the files to your project and:
 
@@ -142,8 +143,8 @@ To load it in your game with GBDK, add the files to your project and:
 	DISPLAY_ON;
 
 In case you chose a ROM bank number different than 0, do not forget to switch to
-it (with `SWITCH_ROM(GAME_BANK_ROM_GRAPHICS_BACKGROUNDS_NAME)` for example)
-before trying to load the background.
+it (with `SWITCH_ROM(BANK(GAME_BACKGROUNDS_NAME))` for example) before trying to
+load the background.
 
 The syntax and code formatting follow the same conventions I use in my source
 code, but it is very easy to modify if you want to. Edit `source_strings.h` to

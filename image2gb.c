@@ -101,15 +101,15 @@ image2gb_run(const gchar* Sname, gint InumParams, const GimpParam* Gparams, gint
 	GimpPDBStatusType GreturnStatus = GIMP_PDB_SUCCESS; /**< Status return value of the plugin, usually success. */
 	
 	// Zero the parameter struct, just in case.
-	memset(&StructExportOptions, 0, sizeof(StructExportOptions));
+	memset( & StructExportOptions, 0, sizeof(StructExportOptions));
 	
 	// Get and store input parameters.
 	GrunMode = Gparams[0].data.d_int32;
 	IimageID = Gparams[1].data.d_int32;
 	
 	// Prepare the mandatory output values.
-	*InumReturnVals = 1;
-	*GreturnVals = GreturnValues;
+	* InumReturnVals = 1;
+	* GreturnVals = GreturnValues;
 	GreturnValues[0].type = GIMP_PDB_STATUS;
 	
 	// Before doing anything, check the validity of the image.
@@ -161,7 +161,7 @@ image2gb_run(const gchar* Sname, gint InumParams, const GimpParam* Gparams, gint
 	// Try to export the image.
 	if (GreturnStatus == GIMP_PDB_SUCCESS)
 		GreturnStatus = image2gb_export_image(IimageID, Gparams[2].data.d_drawable,
-		                                      &StructExportOptions);
+		                                      & StructExportOptions);
 		                                      
 	// Save the parameters for the next invocation, using a parasite.
 	if (GreturnStatus == GIMP_PDB_SUCCESS)
@@ -195,7 +195,7 @@ image2gb_check_image(gint32 IimageID)
 	
 	// We know the image is indexed, but we need to check it is 4-color.
 	gint ncolors;
-	gimp_image_get_colormap(IimageID, &ncolors);
+	gimp_image_get_colormap(IimageID, & ncolors);
 	
 	if (ncolors != 4)
 	{
@@ -228,7 +228,7 @@ image2gb_show_dialog(void)
 	
 	// This is how image export dialogs should be created and registered.
 	WdialogWindow = gimp_export_dialog_new(IMAGE2GB_MENU_NAME, IMAGE2GB_BINARY_NAME, IMAGE2GB_PROCEDURE_SAVE);
-	g_signal_connect(WdialogWindow, "response", G_CALLBACK(image2gb_dialog_response), &GreturnStatus);
+	g_signal_connect(WdialogWindow, "response", G_CALLBACK(image2gb_dialog_response), & GreturnStatus);
 	g_signal_connect(WdialogWindow, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	gtk_window_set_resizable(GTK_WINDOW(WdialogWindow), FALSE);
 	
@@ -272,7 +272,7 @@ image2gb_show_dialog(void)
 	gtk_widget_show(WlabelBank);
 	
 	WspinBank = gtk_spin_button_new_with_range(0, 127, 1);
-	gtk_widget_set_tooltip_text(WspinBank, "Set it to 0 for using no bank.");
+	gtk_widget_set_tooltip_text(WspinBank, "Set it to 0 for using the default bank.");
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(WspinBank), StructExportOptions.bank);
 	gtk_box_pack_start(GTK_BOX(WhBoxBank), WspinBank, FALSE, FALSE, 5);
 	gtk_widget_show(WspinBank);
@@ -301,7 +301,7 @@ image2gb_dialog_response(GtkWidget* Wwidget, gint IresponseID, gpointer Pdata)
 	// GTK_RESPONSE_OK means "Export" was clicked. GIMP_PDB_CANCEL... guess.
 	if (IresponseID == GTK_RESPONSE_OK)
 	{
-		(*GreturnStatus) = GIMP_PDB_SUCCESS;
+		( * GreturnStatus) = GIMP_PDB_SUCCESS;
 		
 		// Save the values of the current export options.
 		strcpy(StructExportOptions.name, gtk_entry_get_text(GTK_ENTRY(WtextName)));
@@ -311,7 +311,7 @@ image2gb_dialog_response(GtkWidget* Wwidget, gint IresponseID, gpointer Pdata)
 			
 		StructExportOptions.bank = gtk_spin_button_get_value(GTK_SPIN_BUTTON(WspinBank));
 	}
-	else (*GreturnStatus) = GIMP_PDB_CANCEL;
+	else ( * GreturnStatus) = GIMP_PDB_CANCEL;
 	
 	// This will automatically free memory of all widgets.
 	gtk_widget_destroy(Wwidget);
@@ -349,7 +349,7 @@ image2gb_save_parameters(gint32 IimageID)
 	// Remove the current one.
 	gimp_image_detach_parasite(IimageID, IMAGE2GB_PARASITE);
 	
-	Gparasite = gimp_parasite_new(IMAGE2GB_PARASITE, 0, sizeof(StructExportOptions), &StructExportOptions);
+	Gparasite = gimp_parasite_new(IMAGE2GB_PARASITE, 0, sizeof(StructExportOptions), & StructExportOptions);
 	gimp_image_attach_parasite(IimageID, Gparasite);
 	gimp_parasite_free(Gparasite);
 }

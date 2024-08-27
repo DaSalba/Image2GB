@@ -1,5 +1,5 @@
 /**
- * @file image2gb.h
+ * @file  image2gb.h
  * @brief GIMP plugin to export an image to Game Boy data (C code, for use with GBDK) - header.
  */
 

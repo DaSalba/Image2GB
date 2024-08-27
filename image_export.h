@@ -1,5 +1,5 @@
 /**
- * @file image_export.h
+ * @file  image_export.h
  * @brief Functionality for exporting a GIMP indexed image to Game Boy data - header + implementation.
  */
 
@@ -20,22 +20,22 @@
 
 // DEFINITIONS /////////////////////////////////////////////////////////////////
 
-#define IMAGE2GB_TILE_SIZE 8 /**< Size of a tile, in pixels (X or Y). */
+#define IMAGE2GB_TILE_SIZE 8 /**< Size of a tile, in pixels (any dimension). */
 
-#define IMAGE2GB_IMAGE_SIZE_MIN IMAGE2GB_TILE_SIZE /**< Minimum acceptable image size, in pixels (X or Y). */
-#define IMAGE2GB_IMAGE_SIZE_MAX 256                /**< Maximum acceptable image size, in pixels (X or Y). */
+#define IMAGE2GB_IMAGE_SIZE_MIN IMAGE2GB_TILE_SIZE /**< Minimum acceptable image size, in pixels (any dimension). */
+#define IMAGE2GB_IMAGE_SIZE_MAX 256                /**< Maximum acceptable image size, in pixels (any dimension). */
 
-#define IMAGE2GB_IMAGE_TILES_VRAM_LIMIT 256 /**< How many unique tiles will fit in GB's memory at a time. */
+#define IMAGE2GB_IMAGE_TILES_VRAM_LIMIT 256 /**< How many unique tiles will fit in GB's VRAM at a time. */
 
-#define IMAGE2GB_TILEMAP_TILES_PER_LINE 20 /**< In the final .c, how many chars of the tilemap to write per line. */
+//#define IMAGE2GB_TILEMAP_TILES_PER_LINE 20 /**< In the final .c, how many chars of the tilemap to write per line. */
 
 /** Object that represents a tile on the GIMP image: a 8x8 pixel square.
  */
-typedef guchar ImageTile[IMAGE2GB_TILE_SIZE * IMAGE2GB_TILE_SIZE];
+typedef guchar ImageTile[IMAGE2GB_TILE_SIZE* IMAGE2GB_TILE_SIZE];
 
 /** Object that represents a Game Boy tile: a 8x8 square with 4-color (2 bit)
- *  pixels. Hence, a tile has 64 * 2 = 128 bits of data, in 8 rows of 16 bits
- *  each.
+ *  pixels. Hence, a tile has 64 * 2 = 128 bits (16 bytes) of data, in 8 rows of
+ *  16 bits (2 bytes) each.
  */
 typedef struct DataTile
 {
@@ -133,24 +133,24 @@ image2gb_read_image_tiles(gint32 IimageID, gint32 IdrawableID)
 	ImageTile imageTile = {0}; /**< Array that stores the GIMP pixels of a tile (8x8). */
 	
 	// Initialize the pixel region for later use.
-	gimp_pixel_rgn_init(&Gregion, Gdrawable,
-	                    0, 0,
-	                    gimp_image_width(IimageID), gimp_image_height(IimageID),
-	                    FALSE, FALSE);
-	                    
+	gimp_pixel_rgn_init( & Gregion, Gdrawable,
+	                     0, 0,
+	                     gimp_image_width(IimageID), gimp_image_height(IimageID),
+	                     FALSE, FALSE);
+	                     
 	// Loop through all tiles of the GIMP image.
 	for (unsigned int row = 0; row < UItileHeight; row++)
 	{
 		for (unsigned int col = 0; col < UItileWidth; col++)
 		{
 			// Get the 64 pixels for this tile.
-			gimp_pixel_rgn_get_rect(&Gregion, imageTile,
-			                        IMAGE2GB_TILE_SIZE * col, IMAGE2GB_TILE_SIZE * row,
-			                        IMAGE2GB_TILE_SIZE, IMAGE2GB_TILE_SIZE);
-			                        
+			gimp_pixel_rgn_get_rect( & Gregion, imageTile,
+			                         IMAGE2GB_TILE_SIZE* col, IMAGE2GB_TILE_SIZE* row,
+			                         IMAGE2GB_TILE_SIZE, IMAGE2GB_TILE_SIZE);
+			                         
 			// Call this other function which will parse and store that tile.
 			// "array + n" gets the address of the nth element of the array.
-			image2gb_read_tile(&imageTile, ArrayDataTiles + ((row * UItileWidth) + col));
+			image2gb_read_tile( & imageTile, ArrayDataTiles + ((row* UItileWidth) + col));
 		}
 	}
 }
@@ -199,8 +199,8 @@ image2gb_read_tile(ImageTile* PimageTile, DataTile* PdataTile)
 	//
 	//  uint16_t row [8]: [10000000 00000000 <=> [ 1]
 	//                     00000000 00000000     [01]
-	//                     00000000 00000000
-	//                     00000000 00000000
+	//                     00000000 00000000       1 - Low
+	//                     00000000 00000000      0  - High
 	//                     00000000 00000000
 	//                     00000000 00000000
 	//                     00000000 00000000
@@ -226,8 +226,8 @@ image2gb_read_tile(ImageTile* PimageTile, DataTile* PdataTile)
 	{
 		// Get the individual bits of the color value, low (right) and high
 		// (left). Important, the variables must be 16-bit.
-		uint16_t UClowBit = (*PimageTile)[pixel] & 0x1;  // Mask against 00000001.
-		uint16_t UChighBit = ((*PimageTile)[pixel] & 0x2) >> 1; // Mask against 00000010.
+		uint16_t UClowBit = ( * PimageTile)[pixel] & 0x1; // Mask against 00000001.
+		uint16_t UChighBit = (( * PimageTile)[pixel] & 0x2) >> 1; // Mask against 00000010.
 		
 		// Shift bits to the left and store them.
 		PdataTile->row[UCtileRow] = (PdataTile->row[UCtileRow] | (UClowBit << (16 - UCbitPair)));
@@ -252,7 +252,7 @@ image2gb_check_duplicates(void)
 	guint UIpreviousDuplicates = 0; /**< Auxiliary variable for storing how many duplicates before the current tile. */
 	
 	// Initialize count to the maximum possible number of tiles.
-	UItileCount = (UItileWidth * UItileHeight);
+	UItileCount = (UItileWidth* UItileHeight);
 	
 	// Initialize tilemap.
 	for (guint tile = 0; tile < UItileCount; tile++)
@@ -270,7 +270,7 @@ image2gb_check_duplicates(void)
 	// duplicate tiles will be removed, we have to substract the current number
 	// of duplicates that have been found up to that moment. So, if there are 11
 	// duplicates before it so far, the correct tile value would be 26, not 37,
-	// because in the final data, those 11 tiles before it will be suppressed.
+	// because in the final tileset those 11 tiles before it will be suppressed.
 	
 	for (guint tile = 0; tile < UItileCount; tile++)
 	{
@@ -329,12 +329,12 @@ image2gb_write_files(PluginExportOptions* PexportOptions)
 	// When writing the final .c source file, the values will be in hexadecimal.
 	// The Game Boy expects the asset data as unsigned chars (8-bit). Each tile
 	// row is 16-bit, so we have to take half and half and convert them to hex.
-	// 2 hex digits equal 8 bits, so using the same example above:
+	// 2 hex digits equal 8 bits (1 byte), so using the same example above:
 	//
 	//  [1 0 3 0 2 1 0 3] <=> [10100101 00101001] <=> [0xA5, 0x29] <=> 8 pixels
 	//
 	// Repeat this for the remaining 7 rows and you have a full tile, with 16
-	// hex values. Repeat for all tiles and you have the final image. Tiles
+	// byte values. Repeat for all tiles and you have the final image. Tiles
 	// marked as duplicate are ignored and not written. The tilemap is written
 	// as it is, also in hexadecimal.
 	
@@ -362,11 +362,13 @@ image2gb_write_files(PluginExportOptions* PexportOptions)
 	
 	// Check "source_strings.h" to see what we're printing here.
 	fprintf(FileOut, IMAGE2GB_SOURCE_STRING_H,
-	        SNameLowercase, ".h", PexportOptions->name,
-	        UItileCount, (UItileWidth * UItileHeight), UItileWidth, UItileHeight,
-	        (UItileWidth * IMAGE2GB_TILE_SIZE), (UItileHeight * IMAGE2GB_TILE_SIZE),
+	        SNameLowercase, PexportOptions->name,
+	        UItileCount, (UItileWidth* UItileHeight), UItileWidth, UItileHeight,
+	        (UItileWidth* IMAGE2GB_TILE_SIZE), (UItileHeight* IMAGE2GB_TILE_SIZE),
+	        PexportOptions->bank,
 	        SNameUppercase, SNameUppercase,
-	        (PexportOptions->bank == 0) ? "//" : "", SNameUppercase, PexportOptions->bank, // If bank = 0, line is commented out.
+	        (PexportOptions->bank == 0) ? "//" : "", // If bank = 0, line is commented out.
+	        (PexportOptions->bank == 0) ? "//" : "", SNameUppercase, // If bank = 0, line is commented out.
 	        SNameUppercase, UItileCount, SNameUppercase, UItileWidth, SNameUppercase, UItileHeight,
 	        PexportOptions->name, PexportOptions->name, PexportOptions->name, PexportOptions->name,
 	        SNameUppercase);
@@ -400,10 +402,14 @@ image2gb_write_files(PluginExportOptions* PexportOptions)
 	
 	// Check "source_strings.h" to see what we're printing here.
 	fprintf(FileOut, IMAGE2GB_SOURCE_STRING_C_1,
-	        SNameLowercase, ".c", PexportOptions->name,
-	        UItileCount, (UItileWidth * UItileHeight), UItileWidth, UItileHeight,
-	        (UItileWidth * IMAGE2GB_TILE_SIZE), (UItileHeight * IMAGE2GB_TILE_SIZE),
-	        SNameLowercase, ".h", PexportOptions->name);
+	        SNameLowercase, PexportOptions->name,
+	        UItileCount, (UItileWidth* UItileHeight), UItileWidth, UItileHeight,
+	        (UItileWidth* IMAGE2GB_TILE_SIZE), (UItileHeight* IMAGE2GB_TILE_SIZE),
+	        PexportOptions->bank,
+	        SNameLowercase,
+	        (PexportOptions->bank == 0) ? "//" : "", // If bank = 0, line is commented out.
+	        (PexportOptions->bank == 0) ? "//" : "", SNameUppercase, // If bank = 0, line is commented out.
+	        PexportOptions->name);
 	        
 	image2gb_write_tile_data(FileOut);
 	
@@ -433,7 +439,7 @@ image2gb_write_tile_data(FILE* FileOut)
 	guint UIprintCount = 0; /**< Auxiliary variable to keep track of how many tiles we have written. */
 	
 	// Print one tile per line.
-	for (guint tile = 0; tile < (UItileWidth * UItileHeight); tile++)
+	for (guint tile = 0; tile < (UItileWidth* UItileHeight); tile++)
 	{
 		// Ignore duplicate tiles.
 		if (ArrayDataTiles[tile].duplicate == TRUE)
@@ -471,15 +477,16 @@ image2gb_write_tilemap(FILE* FileOut)
 	// We do not check for success, we take for granted we can write OK.
 	fprintf(FileOut, "\t");
 	
-	for (guint tile = 0; tile < (UItileWidth * UItileHeight); tile++)
+	for (guint tile = 0; tile < (UItileWidth* UItileHeight); tile++)
 	{
 		fprintf(FileOut, "0x%02X", ArrayTileMap[tile]);
 		
 		// If this is not the last tile of the map, print a separator.
-		if (tile != ((UItileWidth * UItileHeight) - 1))
+		if (tile != ((UItileWidth* UItileHeight) - 1))
 		{
-			// Lines of 20 tiles maximum (20 tiles = 160 pixels = fullscreen width).
-			if (((tile + 1) % IMAGE2GB_TILEMAP_TILES_PER_LINE) == 0)
+			// Print lines of "width" tiles maximum (so the output code has as
+			// many rows and columns as the image).
+			if (((tile + 1) % UItileWidth) == 0)
 				fprintf(FileOut, ",\n\t");
 			else
 				fprintf(FileOut, ", ");
