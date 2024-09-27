@@ -1,10 +1,9 @@
 /**
  * @file  image2gb.h
- * @brief GIMP plugin to export an image to Game Boy data (C code, for use with GBDK) - header.
+ * @brief GIMP plugin to export an image to Game Boy data (C code, for use with GBDK-2020) - header.
  */
 
-#ifndef IMAGE2GB_H_INCLUDED
-#define IMAGE2GB_H_INCLUDED
+#pragma once
 
 // Ignore warnings in external libraries (GIMP, GTK...).
 #pragma GCC system_header
@@ -12,27 +11,29 @@
 #include <libgimp/gimpui.h>
 #include <ctype.h>
 
-// DEFINITIONS /////////////////////////////////////////////////////////////////
+// CONSTANTS ///////////////////////////////////////////////////////////////////
 
 #define IMAGE2GB_BINARY_NAME    "image2gb"        /**< Name of the output binary. */
 #define IMAGE2GB_PROCEDURE_MENU "Image2GB-menu"   /**< Name of the procedure registered as menu entry. */
 #define IMAGE2GB_PROCEDURE_SAVE "Image2GB-export" /**< Name of the procedure registered as save handler. */
 
 #define IMAGE2GB_DESCRIPTION_SHORT "Export image to Game Boy data"
-#define IMAGE2GB_DESCRIPTION_LONG  "Exports an indexed 4-color image to Game Boy data (C code, for use with GBDK)."
+#define IMAGE2GB_DESCRIPTION_LONG  "Exports an indexed 4-color image to Game Boy data (C code, for use with GBDK-2020)."
 #define IMAGE2GB_AUTHOR            "DaSalba"
 #define IMAGE2GB_COPYRIGHT         "Copyright (c) 2020-2024 DaSalba"
 #define IMAGE2GB_DATE              "2024"
-#define IMAGE2GB_MENU_NAME         "Game Boy (GBDK)" /**< Entry that will appear in the menus and "Export as" dialog. */
-#define IMAGE2GB_IMAGE_TYPES       "INDEXED"         /**< What type of images the plugin supports (RGB, GRAY, INDEXED...). */
-#define IMAGE2GB_MENU_PATH         "<Image>/Tools"   /**< Category, and menu path the plugin will appear in. */
+#define IMAGE2GB_MENU_NAME         "Game Boy (GBDK-2020)" /**< Entry that will appear in the menus and "Export as" dialog. */
+#define IMAGE2GB_IMAGE_TYPES       "INDEXED"              /**< What type of images the plugin supports (RGB, GRAY, INDEXED...). */
+#define IMAGE2GB_MENU_PATH         "<Image>/Tools"        /**< Category, and menu path the plugin will appear in. */
 
 #define IMAGE2GB_ASSOCIATED_MIME_TYPE "text/plain" /**< MIME file type that will be associated with this plugin. */
 #define IMAGE2GB_ASSOCIATED_EXTENSION "gbdk"       /**< File extension that will be associated with this plugin. */
 
 #define IMAGE2GB_ASSET_NAME_MAX_LENGTH 32 /**< Max characters of the asset name used for the C variable identifier. */
 
-#define IMAGE2GB_PARASITE "gbdk-export-options" /**< Cookie to store export parameters between invocations (persistent data). */
+#define IMAGE2GB_PARASITE "gbdk-2020-export-options" /**< Cookie to store export parameters between invocations (persistent data). */
+
+// DEFINITIONS /////////////////////////////////////////////////////////////////
 
 /** Object that stores this plugin's export parameters.
  */
@@ -82,5 +83,3 @@ image2gb_load_parameters(gint32 IimageID);
  */
 static void
 image2gb_save_parameters(gint32 IimageID);
-
-#endif // IMAGE2GB_H_INCLUDED

@@ -96,12 +96,14 @@ Linux would be my choice. If you still want to do it, the steps are:
 
 1. Download and install [MSYS2](https://www.msys2.org) (follow instructions to
    [update it](https://www.msys2.org/docs/updating)).
-2. Run MSYS2 MinGW (32 or 64-bit according to your OS, the next steps use 64).
+2. Run MSYS2 MINGW (32 or 64-bit according to your OS, the next steps use
+   `MSYS2 MINGW64`).
 3. Run:
 
 	`pacman -S mingw-w64-x86_64-gimp mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config`
 
-4. Copy the .h and .c files to `C:\msys64\home\<USER>\` (for example).
+4. Copy the .h and .c files to `C:\msys64\home\<USER>\` (that should be the
+   default HOME folder unless you changed it during installation).
 5. Run `gimptool-2.0.exe --install ./image2gb.c` to build and install.
 
 It will compile the plugin and place it in
@@ -116,8 +118,8 @@ Start GIMP, create or load an indexed 4-color image using the Game Boy palette,
 make sure it is 256x256 or smaller, and export it. You have 2 options (both give
 the same final product):
 
-1. *Tools->Game Boy (GBDK)*. It always shows the export dialog.
-2. *File->Export As...*, then save it as .gbdk or choose *Game Boy (GBDK)*
+1. *Tools->Game Boy (GBDK-2020)*. It always shows the export dialog.
+2. *File->Export As...*, then save it as .gbdk or choose *Game Boy (GBDK-2020)*
    from the file type list. The first time it will show the dialog, the next
    time you can just choose *File->Export to <NAME>.gbdk* or hit *CTRL+E* to
    export it again with the same options (quicker).
@@ -131,7 +133,7 @@ and set the ROM bank number (0 for using the default bank). Click *[Export]*.
 The plugin will produce two files, a .h header and a .c source file, containing
 the asset and everything else needed.
 
-To load it in your game with GBDK, add the files to your project and:
+To load it in your game with GBDK-2020, add the files to your project and:
 
 	// Load the tile data (GAME_BACKGROUNDS_NAME_TILES equals the actual number of tiles).
 	set_bkg_data(0U, GAME_BACKGROUNDS_NAME_TILES, BackgroundDataName);
