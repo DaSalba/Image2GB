@@ -40,8 +40,8 @@ with brush number 1 (single-pixel brush).
 
 Try not to make the image too complex. The Game Boy's video memory has space for
 128 sprite tiles, 128 background tiles, and 128 shared by both. That is, you can
-have up to 256 background tiles at any moment (384 using a hack), yet a full
-sized image (160x144 pixels) with no duplicate tiles would need 360.
+have up to 256 background tiles at any moment (384 using a hack), yet a
+fullscreen sized image (160x144 pixels) with no duplicate tiles would need 360.
 
 Import image
 ------------
@@ -73,14 +73,14 @@ it yourself, see the next two sections.
 Linux
 -----
 
-To install the plugin, just run this command in this folder:
+To build and install the plugin, just run this command in this folder:
 
 	gimptool-2.0 --install image2gb.c
 
 It will automatically compile the plugin and copy it to
-`$HOME/.config/GIMP/<VERSION>/plug-ins/`. If get a "command not found" error,
-make sure you have `libgimp2.0-dev` (`gimp-devel-tools` on Fedora) installed on
-your system.
+`$HOME/.config/GIMP/<VERSION>/plug-ins/`. If you get a "command not found"
+error, make sure you have `libgimp2.0-dev` (`gimp-devel-tools` on Fedora)
+installed on your system.
 
 Windows
 -------
@@ -98,12 +98,14 @@ Linux would be my choice. If you still want to do it, the steps are:
    [update it](https://www.msys2.org/docs/updating)).
 2. Run MSYS2 MINGW (32 or 64-bit according to your OS, the next steps use
    `MSYS2 MINGW64`).
-3. Run:
+3. Install the required dependencies:
 
-	`pacman -S mingw-w64-x86_64-gimp mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config`
+		pacman -S mingw-w64-x86_64-gimp mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config
 
-4. Copy the .h and .c files to `C:\msys64\home\<USER>\` (that should be the
-   default HOME folder unless you changed it during installation).
+4. Copy the plugin's source files (.h and .c) to `C:\msys64\home\<USER>\` (that
+   should be the default HOME folder unless you changed it during installation,
+   and it's also the folder the MSYS2 terminal should load at startup, so you
+   should be there already, check this with `pwd`).
 5. Run `gimptool-2.0.exe --install ./image2gb.c` to build and install.
 
 It will compile the plugin and place it in
@@ -120,9 +122,9 @@ the same final product):
 
 1. *Tools->Game Boy (GBDK-2020)*. It always shows the export dialog.
 2. *File->Export As...*, then save it as .gbdk or choose *Game Boy (GBDK-2020)*
-   from the file type list. The first time it will show the dialog, the next
-   time you can just choose *File->Export to <NAME>.gbdk* or hit *CTRL+E* to
-   export it again with the same options (quicker).
+   from the file type dropdown list. The first time it will show the dialog, the
+   next time you can just choose *File->Export to <NAME>.gbdk* or hit *CTRL+E*
+   to export it again with the last used options (quicker).
 
 ![Export dialog](GIMP_export_dialog.png "GIMP export dialog of the plugin")
 
@@ -130,16 +132,16 @@ In the self-explanatory plugin export dialog, just input the name you want for
 the asset (try to keep it short and a valid C identifier, it will be the base
 name for the variables), choose the destination folder by clicking the button,
 and set the ROM bank number (0 for using the default bank). Click *[Export]*.
-The plugin will produce two files, a .h header and a .c source file, containing
+The plugin will generate two files, a .h header and a .c source file, containing
 the asset and everything else needed.
 
-To load it in your game with GBDK-2020, add the files to your project and:
+To use it in your game with GBDK-2020, add the two files to your project and:
 
-	// Load the tile data (GAME_BACKGROUNDS_NAME_TILES equals the actual number of tiles).
+	// Load the tile data at the start of VRAM.
 	set_bkg_data(0U, GAME_BACKGROUNDS_NAME_TILES, BackgroundDataName);
-	// Draw the map to the whole screen (a tile is 8x8).
+	// Load and set the tile map at screen origin.
 	set_bkg_tiles(0U, 0U, GAME_BACKGROUNDS_NAME_SIZE_X, GAME_BACKGROUNDS_NAME_SIZE_Y, BackgroundMapName);
-	// Show the background layer.
+	// Enable the background layer.
 	SHOW_BKG;
 	// Turn the display on.
 	DISPLAY_ON;
