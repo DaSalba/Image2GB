@@ -22,7 +22,8 @@ Create image
 1. Create a new image, dimensions multiples of 8 pixels, 256x256 maximum (the GB
    screen is 160x144).
 2. *Image->Mode->Indexed...* and choose *Use custom palette*.
-3. Select *Game Boy (4)*, which should be at the beginning of the palette list.
+3. Select *Game Boy (4)* (or the Pocket version), which should be at the
+   beginning of the palette list.
 4. Be sure to **uncheck _Remove unused and duplicate colors from colormap_**!
 5. Click *[Convert]*.
 6. Open the palette menu (*Windows->Dockable Dialogs->Palettes*), right click
@@ -108,7 +109,7 @@ Linux would be my choice. If you still want to do it, the steps are:
    `MSYS2 MINGW64`).
 3. Install the required dependencies:
 
-		pacman -S mingw-w64-x86_64-gimp mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config
+		pacman -S mingw-w64-x86_64-gimp2 mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config
 
 4. Copy the plugin's source files (.h and .c) to `C:\msys64\home\<USER>\` (that
    should be the default HOME folder unless you changed it during installation,
@@ -119,7 +120,9 @@ Linux would be my choice. If you still want to do it, the steps are:
 It will compile the plugin and place it in
 `C:\Users\<USER>\AppData\Roaming\GIMP\<VERSION>\plug-ins\`. If it fails with
 some message saying "cannot open output file", copy the full GCC command (with
-all parameters), paste it at the command line, run it and it should work.
+all parameters), paste it at the command line, and edit the output path (the
+parameter preceded by `-o`) to change all backslashes (`\`) to forward slashes
+(`/`). Then run it, and it should work.
 
 Usage
 -----
@@ -168,10 +171,9 @@ Troubleshooting
 **Q1:** GIMP does not let me paint on the image after converting it to indexed
         mode.
 
-**A1:** Did you forget to uncheck
-        *Remove unused and duplicate colors from colormap*? If checked, GIMP
-        seems to remove all but the background color, so you can't paint other
-        colors, and you can't export either.
+**A1:** Did you forget to uncheck *Remove unused and duplicate colors from
+        colormap*? If checked, GIMP seems to remove all but the background
+        color, so you can't paint other colors, and you can't export either.
 
 **Q2:** I can't run the plugin, the menu option is greyed out.
 
@@ -188,3 +190,10 @@ Troubleshooting
         it. As I explained above, GB only supports up to 256 unique tiles.
         Search for "Game Boy tile overlap hack" to see how to get past that
         limit.
+
+**Q4** I can't find `gimptool-2.0[.exe]` in my system, yet GIMP [and MSYS2] are
+       installed.
+
+**A4** You are running version 3.0 of GIMP, released early 2025. I still have to
+       update my plugin to make it compatible with that version, which has
+       changed several things. It uses `gimptool-3.0[.exe]`.
