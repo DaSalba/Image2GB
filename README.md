@@ -23,7 +23,8 @@ Create image
    screen is 160x144).
 2. *Image->Mode->Indexed...* and choose *Use custom palette*.
 3. Select *Game Boy (4)* (or the Pocket version), which should be at the
-   beginning of the palette list.
+   beginning of the palette list. In parentheses is the number of colors of each
+   palette.
 4. Be sure to **uncheck _Remove unused and duplicate colors from colormap_**!
 5. Click *[Convert]*.
 6. Open the palette menu (*Windows->Dockable Dialogs->Palettes*), right click
@@ -50,16 +51,16 @@ command to make sure the image contains as little data as possible (check that
 the dimensions are still multiples of 8 after running it). GBDK-2020's functions
 allow you to place a background beginning at a specific horizontal and vertical
 offset, so there is not need for you to align and/or center content by adding
-empty space in GIMP. You will adjust that from your code later.
+padding space in GIMP. You will adjust that from your code later.
 
 Import image
 ------------
 
-If you want to use an existing image, my recommendation is that you fist convert
-it to 4-color indexed mode using the palette (make sure you enable good quality
-dithering), then downsize it using cubic interpolation or some other algorithm.
-If you copy from another image, be sure to use *Image->Flatten Image* to merge
-all layers.
+If you want to use an existing image, my recommendation is that you first
+convert it to 4-color indexed mode using the palette (make sure you enable good
+quality dithering), then downsize it using cubic interpolation or some other
+algorithm. If you copy from another image, be sure to use *Image->Flatten Image*
+to merge all layers.
 
 Plugin
 ======
@@ -113,7 +114,7 @@ Linux would be my choice. If you still want to do it, the steps are:
 
 4. Copy the plugin's source files (.h and .c) to `C:\msys64\home\<USER>\` (that
    should be the default HOME folder unless you changed it during installation,
-   and it's also the folder the MSYS2 terminal should load at startup, so you
+   and it is also the folder the MSYS2 terminal should load at startup, so you
    should be there already, check this with `pwd`).
 5. Run `gimptool-2.0.exe --install ./image2gb.c` to build and install.
 
@@ -173,9 +174,9 @@ Troubleshooting
 
 **A1:** Did you forget to uncheck *Remove unused and duplicate colors from
         colormap*? If checked, GIMP seems to remove all but the background
-        color, so you can't paint other colors, and you can't export either.
+        color, so you can not paint other colors, and you can not export either.
 
-**Q2:** I can't run the plugin, the menu option is greyed out.
+**Q2:** I can not run the plugin, the menu option is greyed out.
 
 **A2:** See error above. Also, sometimes GIMP seems to get "stuck" despite
         converting the image to indexed mode, and thinks it still is RGB. To fix
@@ -191,9 +192,17 @@ Troubleshooting
         Search for "Game Boy tile overlap hack" to see how to get past that
         limit.
 
-**Q4** I can't find `gimptool-2.0[.exe]` in my system, yet GIMP [and MSYS2] are
-       installed.
+**Q4** I can not find `gimptool-2.0[.exe]` in my system, yet GIMP [and MSYS2]
+       are installed.
 
 **A4** You are running version 3.0 of GIMP, released early 2025. I still have to
        update my plugin to make it compatible with that version, which has
        changed several things. It uses `gimptool-3.0[.exe]`.
+
+**Q5:** Could I use your plugin to compose my game maps and tilesets?
+
+**A5:** Theoretically, you could, but there are far better tools for that such
+        as [GBMB](https://github.com/gbdk-2020/GBTD_GBMB) and
+        [Tiled](https://www.mapeditor.org/). My plugin is meant for high quality
+        artwork (even photos) that you may want to export to your ROM, such as a
+        splash screen or menu background. GIMP is not much of a level editor.
