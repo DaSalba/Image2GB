@@ -2,7 +2,8 @@ Palette
 =======
 
 `Game-Boy.gpl` is a GIMP color palette that contains the 4 colors the original
-Game Boy console uses.
+Game Boy console uses (shades of green). If you prefer it, there is also another
+file, `Game-Boy-Pocket.gpl`, with the Game Boy Pocket palette (shades of gray).
 
 Install
 -------
@@ -18,7 +19,7 @@ file and click *[Import]*.
 Create image
 ------------
 
-1. Create a new image, sizes multiples of 8 pixels, 256x256 maximum (the GB
+1. Create a new image, dimensions multiples of 8 pixels, 256x256 maximum (the GB
    screen is 160x144).
 2. *Image->Mode->Indexed...* and choose *Use custom palette*.
 3. Select *Game Boy (4)*, which should be at the beginning of the palette list.
@@ -42,6 +43,13 @@ Try not to make the image too complex. The Game Boy's video memory has space for
 128 sprite tiles, 128 background tiles, and 128 shared by both. That is, you can
 have up to 256 background tiles at any moment (384 using a hack), yet a
 fullscreen sized image (160x144 pixels) with no duplicate tiles would need 360.
+
+Needless to say, you should make good use of the *Image->Crop to content* GIMP
+command to make sure the image contains as little data as possible (check that
+the dimensions are still multiples of 8 after running it). GBDK-2020's functions
+allow you to place a background beginning at a specific horizontal and vertical
+offset, so there is not need for you to align and/or center content by adding
+empty space in GIMP. You will adjust that from your code later.
 
 Import image
 ------------
@@ -138,16 +146,16 @@ the asset and everything else needed.
 To use it in your game with GBDK-2020, add the two files to your project and:
 
 	// Load the tile data at the start of VRAM.
-	set_bkg_data(0U, GAME_BACKGROUNDS_NAME_TILES, BackgroundDataName);
+	set_bkg_data(0U, BACKGROUND_NAME_TILES, BackgroundDataName);
 	// Load and set the tile map at screen origin.
-	set_bkg_tiles(0U, 0U, GAME_BACKGROUNDS_NAME_SIZE_X, GAME_BACKGROUNDS_NAME_SIZE_Y, BackgroundMapName);
+	set_bkg_tiles(0U, 0U, BACKGROUND_NAME_SIZE_X, BACKGROUND_NAME_SIZE_Y, BackgroundMapName);
 	// Enable the background layer.
 	SHOW_BKG;
 	// Turn the display on.
 	DISPLAY_ON;
 
 In case you chose a ROM bank number different than 0, do not forget to switch to
-it (with `SWITCH_ROM(BANK(GAME_BACKGROUNDS_NAME))` for example) before trying to
+it (with `SWITCH_ROM(BANK(BACKGROUND_NAME))` for example) before trying to
 load the background.
 
 The syntax and code formatting follow the same conventions I use in my source

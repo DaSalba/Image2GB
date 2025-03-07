@@ -1,8 +1,8 @@
 GIMP Palette
 Name: Game Boy
 Columns: 0
-#
-155 188  15	Lightest green (00)
-139 172  15	Light green (01)
- 48  98  48	Dark green (10)
- 15  56  15	Darkest green (11)
+
+155 188 15 Lightest green (00)
+139 172 15 Light green (01)
+ 48  98 48 Dark green (10)
+ 15  56 15 Darkest green (11)

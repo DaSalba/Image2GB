@@ -20,8 +20,8 @@
 #define IMAGE2GB_DESCRIPTION_SHORT "Export image to Game Boy data"
 #define IMAGE2GB_DESCRIPTION_LONG  "Exports an indexed 4-color image to Game Boy data (C code, for use with GBDK-2020)."
 #define IMAGE2GB_AUTHOR            "DaSalba"
-#define IMAGE2GB_COPYRIGHT         "Copyright (c) 2020-2024 DaSalba"
-#define IMAGE2GB_DATE              "2024"
+#define IMAGE2GB_COPYRIGHT         "Copyright (c) 2020-2025 DaSalba"
+#define IMAGE2GB_DATE              "2025"
 #define IMAGE2GB_MENU_NAME         "Game Boy (GBDK-2020)" /**< Entry that will appear in the menus and "Export as" dialog. */
 #define IMAGE2GB_IMAGE_TYPES       "INDEXED"              /**< What type of images the plugin supports (RGB, GRAY, INDEXED...). */
 #define IMAGE2GB_MENU_PATH         "<Image>/Tools"        /**< Category, and menu path the plugin will appear in. */
@@ -29,7 +29,7 @@
 #define IMAGE2GB_ASSOCIATED_MIME_TYPE "text/plain" /**< MIME file type that will be associated with this plugin. */
 #define IMAGE2GB_ASSOCIATED_EXTENSION "gbdk"       /**< File extension that will be associated with this plugin. */
 
-#define IMAGE2GB_ASSET_NAME_MAX_LENGTH 32 /**< Max characters of the asset name used for the C variable identifier. */
+#define IMAGE2GB_ASSET_NAME_MAX_LENGTH 32U /**< Max characters of the asset name used for the C variable identifier. */
 
 #define IMAGE2GB_PARASITE "gbdk-2020-export-options" /**< Cookie to store export parameters between invocations (persistent data). */
 
@@ -40,8 +40,8 @@
 typedef struct PluginExportOptions
 {
 	gchar name[IMAGE2GB_ASSET_NAME_MAX_LENGTH]; /**< Base name of the image asset to export. */
-	gchar folder[PATH_MAX]; /**< Full path of the directory to save to. */
-	gint bank; /**< ROM bank to store the image data in. */
+	gchar folder[PATH_MAX];                     /**< Full path of the directory to save to. */
+	gint bank;                                  /**< ROM bank to store the image data in. */
 } PluginExportOptions;
 
 // FUNCTIONS ///////////////////////////////////////////////////////////////////

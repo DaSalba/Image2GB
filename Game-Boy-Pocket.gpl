@@ -1,0 +1,8 @@
+GIMP Palette
+Name: Game Boy Pocket
+Columns: 0
+
+255 255 255 White (00)
+169 169 169 Light gray (01)
+ 84  84  84 Dark gray (10)
+  0   0   0 Black (11)

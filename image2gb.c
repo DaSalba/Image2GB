@@ -11,11 +11,13 @@
 
 /** Pointers to this plugin's functions. This variable will be read by GIMP.
  */
-GimpPlugInInfo PLUG_IN_INFO = {NULL,
-                               NULL,
-                               image2gb_query,
-                               image2gb_run
-                              };
+GimpPlugInInfo PLUG_IN_INFO =
+{
+	NULL,
+	NULL,
+	image2gb_query,
+	image2gb_run
+};
 
 /** Stores the export parameters during execution.
  */
@@ -26,8 +28,8 @@ PluginExportOptions StructExportOptions = {0};
  */
 GtkWidget* WtextName;
 
-/** GTK button for choosing the destination folder. Contains the file chooser
- *  widget, it is global so we can read the value anywhere.
+/** GTK button for choosing the destination folder, contains the file chooser
+ *  widget. It is global so we can read the value anywhere.
  */
 GtkWidget* WbuttonFolder;
 
@@ -45,12 +47,14 @@ image2gb_query(void)
 {
 	// Set what input parameters this plugin will use. First 5 are the minimum
 	// ones needed for a file export plugin, you could add more at the end.
-	static GimpParamDef Gparams[] = {{GIMP_PDB_INT32, "run-mode", "The run mode"},
-		{GIMP_PDB_IMAGE, "image", "Input image"},
-		{GIMP_PDB_DRAWABLE, "drawable", "Drawable to save"},
-		{GIMP_PDB_STRING, "filename", "The name of the file to save the image in"},
-		{GIMP_PDB_STRING, "raw-filename", "The name of the file to save the image in"},
-		{GIMP_PDB_INT32, "bank", "The ROM bank number to store the asset in (optional, default 0)"}
+	static GimpParamDef Gparams[] =
+	{
+		{GIMP_PDB_INT32,    "run-mode",     "The run mode"},
+		{GIMP_PDB_IMAGE,    "image",        "Input image"},
+		{GIMP_PDB_DRAWABLE, "drawable",     "Drawable to save"},
+		{GIMP_PDB_STRING,   "filename",     "The name of the file to save the image in"},
+		{GIMP_PDB_STRING,   "raw-filename", "The name of the file to save the image in"},
+		{GIMP_PDB_INT32,    "bank",         "The ROM bank number to store the asset in (optional, default 0)"}
 	};
 
 	// Install the procedures in the PDB (Procedure DB). The same procedure can
@@ -94,8 +98,10 @@ static void
 image2gb_run(const gchar* Sname, gint InumParams, const GimpParam* Gparams, gint* InumReturnVals, GimpParam** GreturnVals)
 {
 	GimpRunMode GrunMode; /**< The run mode (GIMP_RUN_INTERACTIVE, GIMP_RUN_NONINTERACTIVE, GIMP_RUN_WITH_LAST_VALS). */
+
 	gint32 IimageID; /**< ID of the image to export. */
-	static GimpParam GreturnValues[1]; /**< Array of return values. */
+
+	static GimpParam GreturnValues[1];                  /**< Array of return values. */
 	GimpPDBStatusType GreturnStatus = GIMP_PDB_SUCCESS; /**< Status return value of the plugin, usually success. */
 
 	// Zero the parameter struct, just in case.

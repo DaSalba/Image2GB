@@ -26,22 +26,22 @@
 \n\
 %s#include <gb/gb.h>\n\
 \n\
-%sBANKREF_EXTERN(GAME_BACKGROUNDS_%s)\n\
+%sBANKREF_EXTERN(BACKGROUND_%s)\n\
 \n\
 // CONSTANTS ///////////////////////////////////////////////////////////////////\n\
 \n\
-#define GAME_BACKGROUNDS_%s_TILES %uU /**< How many unique tiles this background has. */\n\
+#define BACKGROUND_%s_TILES %uU /**< How many unique tiles this background has. */\n\
 \n\
-#define GAME_BACKGROUNDS_%s_SIZE_X %uU /**< Width of this background, in 8x8 tiles. */\n\
-#define GAME_BACKGROUNDS_%s_SIZE_Y %uU /**< Height of this background, in 8x8 tiles. */\n\
+#define BACKGROUND_%s_SIZE_X %uU /**< Width of this background, in 8x8 tiles (columns). */\n\
+#define BACKGROUND_%s_SIZE_Y %uU /**< Height of this background, in 8x8 tiles (rows). */\n\
 \n\
 /** %s (data), exported by Image2GB for use with GBDK-2020.\n\
  */\n\
-extern const unsigned char BackgroundData%s[];\n\
+extern const uint8_t BackgroundData%s[];\n\
 \n\
 /** %s (map), exported by Image2GB for use with GBDK-2020.\n\
  */\n\
-extern const unsigned char BackgroundMap%s[];\n"
+extern const uint8_t BackgroundMap%s[];\n"
 
 /** String that stores part 1 of a premade .c source of a GBDK-2020 image asset,
  *  filled with format specifiers, ready to get sent to printf.
@@ -61,11 +61,11 @@ extern const unsigned char BackgroundMap%s[];\n"
 \n\
 %s#include <gb/gb.h>\n\
 \n\
-%sBANKREF(GAME_BACKGROUNDS_%s)\n\
+%sBANKREF(BACKGROUND_%s)\n\
 \n\
 // CONSTANTS ///////////////////////////////////////////////////////////////////\n\
 \n\
-const unsigned char BackgroundData%s[] =\n\
+const uint8_t BackgroundData%s[] =\n\
 {\n"
 
 /** String that stores part 2 of a premade .c source of a GBDK-2020 image asset,
@@ -73,7 +73,7 @@ const unsigned char BackgroundData%s[] =\n\
  */
 #define IMAGE2GB_SOURCE_STRING_C_2 "};\n\
 \n\
-const unsigned char BackgroundMap%s[] =\n\
+const uint8_t BackgroundMap%s[] =\n\
 {\n"
 
 #endif // IMAGE2GB_SOURCE_STRINGS_H_INCLUDED
