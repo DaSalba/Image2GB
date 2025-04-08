@@ -20,18 +20,19 @@ Create image
 ------------
 
 1. Create a new image, dimensions multiples of 8 pixels, 256x256 maximum (the GB
-   screen is 160x144).
+   screen is 160x144, but the VRAM background size is 256x256).
 2. *Image->Mode->Indexed...* and choose *Use custom palette*.
-3. Select *Game Boy (4)* (or the Pocket version), which should be at the
+3. Select *Game Boy (4)* or *Game Boy Pocket (4)*, which should be at the
    beginning of the palette list. In parentheses is the number of colors of each
    palette.
 4. Be sure to **uncheck _Remove unused and duplicate colors from colormap_**!
 5. Click *[Convert]*.
-6. Open the palette menu (*Windows->Dockable Dialogs->Palettes*), right click
-   the Game Boy palette in the list, select *Edit Palette...*. A new tab
-   (Palette Editor) should open next to the Palettes one.
+6. Open the [palette tab](https://docs.gimp.org/3.0/en/gimp-palette-dialog.html)
+   (*Windows->Dockable Dialogs->Palettes*), right click the Game Boy palette in
+   the list, select *Edit Palette...*. A new tab (Palette Editor) should open
+   next to the Palettes one.
 7. You should now see the 4 colors and their names, click *[Zoom all]* to make
-   them bigger (the *[: :]* button to the right of the *+* one).
+   them bigger (the button to the right of the **+** one).
 
 ![GIMP palettes](GIMP_palettes.png "GIMP interface, with palette tabs")
 
@@ -42,16 +43,16 @@ go to *Edit->Preferences*, *Default Image->Default Grid*, and set both
 with brush number 1 (single-pixel brush).
 
 Try not to make the image too complex. The Game Boy's video memory has space for
-128 sprite tiles, 128 background tiles, and 128 shared by both. That is, you can
-have up to 256 background tiles at any moment (384 using a hack), yet a
+128 sprite patterns, 128 background tiles, and 128 shared by both. That is, you
+can have up to 256 background tiles at any moment (384 using a hack), yet a
 fullscreen sized image (160x144 pixels) with no duplicate tiles would need 360.
 
 Needless to say, you should make good use of the *Image->Crop to content* GIMP
 command to make sure the image contains as little data as possible (check that
-the dimensions are still multiples of 8 after running it). GBDK-2020's functions
-allow you to place a background beginning at a specific horizontal and vertical
-offset, so there is not need for you to align and/or center content by adding
-padding space in GIMP. You will adjust that from your code later.
+the dimensions are still multiples of 8 after running it). GBDK-2020 allows you
+to place a background beginning at a specific horizontal and vertical offset, so
+there is not need for you to align and/or center content by adding padding space
+in GIMP. You will adjust that from your code later.
 
 Import image
 ------------
@@ -65,7 +66,7 @@ to merge all layers.
 Plugin
 ======
 
-`Image2GB` is a GIMP plugin that allows to export an image directly to GBDK
+`Image2GB` is a GIMP plugin that allows you to export an image directly to GBDK
 (Game Boy Development Kit) format, e.g. in order to create assets for use with
 the most recent [GBDK-2020](https://github.com/gbdk-2020/gbdk-2020). The only
 **image prerequisites** are that:
@@ -83,69 +84,70 @@ it yourself, see the next two sections.
 Linux
 -----
 
-To build and install the plugin, just run this command in this folder:
+To build and install the plugin, just run this command in this directory:
 
-	gimptool-2.0 --install image2gb.c
+	gimptool-3 --install image2gb.c
 
 It will automatically compile the plugin and copy it to
 `$HOME/.config/GIMP/<VERSION>/plug-ins/`. If you get a "command not found"
-error, make sure you have `libgimp2.0-dev` (`gimp-devel-tools` on Fedora)
+error, make sure you have `libgimp3.0-dev` (`gimp-devel-tools` on Fedora)
 installed on your system.
 
 Windows
 -------
 
 The procedure is the same, but it requires you to install and configure both
-MSYS2 and MinGW, which is a hassle. The binary in `C:\Program Files\GIMP 2\bin\`
-will not work, complaining about "pkg-config not found". Try the following
-command and see for yourself:
+MSYS2 and Clang, which is a hassle. The binary in `C:\Program Files\GIMP 3\bin\`
+will not work, complaining about "pkg-config not recognized". Linux would be my
+choice, but if you still want to do it, the steps are:
 
-	.\gimptool-2.0.exe --install .\image2gb.c
+1. Download and install [MSYS2](https://www.msys2.org).
+2. Follow instructions to [update it](https://www.msys2.org/docs/updating),
+   which can be summarized as running `MSYS2 MSYS` and executing the command
+   `pacman -Suy`).
+3. Run `MSYS2 CLANG64`.
+4. Install the required dependencies:
 
-Linux would be my choice. If you still want to do it, the steps are:
+		pacman -S mingw-w64-clang-x86_64-clang mingw-w64-clang-x86_64-pkg-config mingw-w64-clang-x86_64-gimp
 
-1. Download and install [MSYS2](https://www.msys2.org) (follow instructions to
-   [update it](https://www.msys2.org/docs/updating)).
-2. Run MSYS2 MINGW (32 or 64-bit according to your OS, the next steps use
-   `MSYS2 MINGW64`).
-3. Install the required dependencies:
-
-		pacman -S mingw-w64-x86_64-gimp2 mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config
-
-4. Copy the plugin's source files (.h and .c) to `C:\msys64\home\<USER>\` (that
+5. Copy the plugin's source files (.h and .c) to `C:\msys64\home\<USER>\` (that
    should be the default HOME folder unless you changed it during installation,
    and it is also the folder the MSYS2 terminal should load at startup, so you
-   should be there already, check this with `pwd`).
-5. Run `gimptool-2.0.exe --install ./image2gb.c` to build and install.
+   should be there already, check this with `pwd` and `ls`).
+6. Run the following command to build and install:
+
+		gimptool-3.exe --install image2gb.c
 
 It will compile the plugin and place it in
-`C:\Users\<USER>\AppData\Roaming\GIMP\<VERSION>\plug-ins\`. If it fails with
-some message saying "cannot open output file", copy the full GCC command (with
-all parameters), paste it at the command line, and edit the output path (the
-parameter preceded by `-o`) to change all backslashes (`\`) to forward slashes
-(`/`). Then run it, and it should work.
+`C:\Users\<USER>\AppData\Roaming\GIMP\<VERSION>\plug-ins\`. If it fails with an
+error message saying "no such file or directory", copy the full clang command
+(with all parameters), paste it at the command line, and edit it to remove the
+single quotes (`'`) around the input file name (change `'image2gb.c'` to
+`image2gb.c`). If the error says "cannot open output file", edit the output
+path (the parameter preceded by `-o`) to change all backslashes (`\`) to forward
+slashes (`/`).
 
 Usage
 -----
 
 Start GIMP, create or load an indexed 4-color image using the Game Boy palette,
-make sure it is 256x256 or smaller, and export it. You have 2 options (both give
-the same final product):
+make sure it is 256x256 or smaller, and export it. You have two options (both
+give the same final product):
 
-1. *Tools->Game Boy (GBDK-2020)*. It always shows the export dialog.
-2. *File->Export As...*, then save it as .gbdk or choose *Game Boy (GBDK-2020)*
+1. *Tools->Game Boy (GBDK-2020)*. It will always show the export dialog.
+2. *File->Export...*, then save it as a .gbdk or choose *Game Boy (GBDK-2020)*
    from the file type dropdown list. The first time it will show the dialog, the
    next time you can just choose *File->Export to <NAME>.gbdk* or hit *CTRL+E*
-   to export it again with the last used options (quicker).
+   to export it again with the last used options, skipping the dialog (quicker).
 
 ![Export dialog](GIMP_export_dialog.png "GIMP export dialog of the plugin")
 
 In the self-explanatory plugin export dialog, just input the name you want for
 the asset (try to keep it short and a valid C identifier, it will be the base
-name for the variables), choose the destination folder by clicking the button,
-and set the ROM bank number (0 for using the default bank). Click *[Export]*.
-The plugin will generate two files, a .h header and a .c source file, containing
-the asset and everything else needed.
+name for the variables), choose the destination path by clicking the button, and
+set the ROM bank number (0 for using the default bank). Click *[OK]*. The plugin
+will generate two files, a .h header and a .c source file, containing the asset
+and everything else needed.
 
 To use it in your game with GBDK-2020, add the two files to your project and:
 
@@ -169,40 +171,44 @@ suit your needs.
 Troubleshooting
 ===============
 
-**Q1:** GIMP does not let me paint on the image after converting it to indexed
-        mode.
+**Q1: GIMP does not let me paint on the image after converting it to indexed
+      mode.**
 
 **A1:** Did you forget to uncheck *Remove unused and duplicate colors from
-        colormap*? If checked, GIMP seems to remove all but the background
-        color, so you can not paint other colors, and you can not export either.
+        colormap*? If checked, GIMP removes all but the first palette color (the
+        default one used for the background), so you cannot paint with others,
+        and you cannot export either.
 
-**Q2:** I can not run the plugin, the menu option is greyed out.
+**Q2: I cannot run the plugin, the menu option is greyed out.**
 
 **A2:** See error above. Also, sometimes GIMP seems to get "stuck" despite
         converting the image to indexed mode, and thinks it still is RGB. To fix
         that, create a new image following the instructions, make sure you can
         export it, then copy the other one and paste. Remember to flatten the
         image to merge all layers. If the error persists, remove GIMP's config
-        folder (in your $HOME).
+        directory in your `$HOME` (if Linux) or user `AppData\` (if Windows).
 
-**Q3:** Only the first 2/3 of the image is rendered OK, the rest is repetition.
+**Q3: Only the first 2/3 of the image is rendered OK, the rest is repetition.**
 
 **A3:** The image is too complex, and the plugin warned you when you exported
         it. As I explained above, GB only supports up to 256 unique tiles.
         Search for "Game Boy tile overlap hack" to see how to get past that
         limit.
 
-**Q4** I can not find `gimptool-2.0[.exe]` in my system, yet GIMP [and MSYS2]
-       are installed.
+**Q4 I cannot find `gimptool-3[.exe]` in my system, yet GIMP [and MSYS2] are
+     installed.**
 
-**A4** You are running version 3.0 of GIMP, released early 2025. I still have to
-       update my plugin to make it compatible with that version, which has
-       changed several things. It uses `gimptool-3.0[.exe]`.
+**A4** You are probably running the legacy 2.0 version of GIMP. Since early
+       2025 version 3.0 is the default stable branch, so you should update. If
+	   you do not want or are unable to, download an older v1.x
+	   [release](https://github.com/DaSalba/Image2GB/releases) of my plugin.
+	   From 2.0 onwards only GIMP 3 is supported.
 
-**Q5:** Could I use your plugin to compose my game maps and tilesets?
+**Q5: Could I use your plugin to compose my game maps and tilesets?**
 
 **A5:** Theoretically, you could, but there are far better tools for that such
         as [GBMB](https://github.com/gbdk-2020/GBTD_GBMB) and
         [Tiled](https://www.mapeditor.org/). My plugin is meant for high quality
         artwork (even photos) that you may want to export to your ROM, such as a
-        splash screen or menu background. GIMP is not much of a level editor.
+        splash screen or menu background. GIMP is not much of a level editor,
+        plus the plugin is limited to 256x256 pixels images.

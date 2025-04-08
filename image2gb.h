@@ -5,81 +5,117 @@
 
 #pragma once
 
-// Ignore warnings in external libraries (GIMP, GTK...).
-#pragma GCC system_header
 #include <libgimp/gimp.h>
-#include <libgimp/gimpui.h>
-#include <ctype.h>
-
-// CONSTANTS ///////////////////////////////////////////////////////////////////
-
-#define IMAGE2GB_BINARY_NAME    "image2gb"        /**< Name of the output binary. */
-#define IMAGE2GB_PROCEDURE_MENU "Image2GB-menu"   /**< Name of the procedure registered as menu entry. */
-#define IMAGE2GB_PROCEDURE_SAVE "Image2GB-export" /**< Name of the procedure registered as save handler. */
-
-#define IMAGE2GB_DESCRIPTION_SHORT "Export image to Game Boy data"
-#define IMAGE2GB_DESCRIPTION_LONG  "Exports an indexed 4-color image to Game Boy data (C code, for use with GBDK-2020)."
-#define IMAGE2GB_AUTHOR            "DaSalba"
-#define IMAGE2GB_COPYRIGHT         "Copyright (c) 2020-2025 DaSalba"
-#define IMAGE2GB_DATE              "2025"
-#define IMAGE2GB_MENU_NAME         "Game Boy (GBDK-2020)" /**< Entry that will appear in the menus and "Export as" dialog. */
-#define IMAGE2GB_IMAGE_TYPES       "INDEXED"              /**< What type of images the plugin supports (RGB, GRAY, INDEXED...). */
-#define IMAGE2GB_MENU_PATH         "<Image>/Tools"        /**< Category, and menu path the plugin will appear in. */
-
-#define IMAGE2GB_ASSOCIATED_MIME_TYPE "text/plain" /**< MIME file type that will be associated with this plugin. */
-#define IMAGE2GB_ASSOCIATED_EXTENSION "gbdk"       /**< File extension that will be associated with this plugin. */
-
-#define IMAGE2GB_ASSET_NAME_MAX_LENGTH 32U /**< Max characters of the asset name used for the C variable identifier. */
-
-#define IMAGE2GB_PARASITE "gbdk-2020-export-options" /**< Cookie to store export parameters between invocations (persistent data). */
 
 // DEFINITIONS /////////////////////////////////////////////////////////////////
 
-/** Object that stores this plugin's export parameters.
+/** Unused, but needed to adhere to GIMP 3's GObject structure.
  */
-typedef struct PluginExportOptions
+struct _Image2GB
 {
-	gchar name[IMAGE2GB_ASSET_NAME_MAX_LENGTH]; /**< Base name of the image asset to export. */
-	gchar folder[PATH_MAX];                     /**< Full path of the directory to save to. */
-	gint bank;                                  /**< ROM bank to store the image data in. */
-} PluginExportOptions;
+	GimpPlugIn parent_instance;
+};
+
+// VARIABLES ///////////////////////////////////////////////////////////////////
+
+extern char* SparamAssetName; /**< Current value of the "asset name" parameter. */
+extern char* SparamFolder;    /**< Current value of the "output path" parameter. */
+
+extern unsigned int UIparamBank; /**< Current value of the "bank number" parameter. */
 
 // FUNCTIONS ///////////////////////////////////////////////////////////////////
 
-/** Returns information about this plugin whenever it is loaded or changes.
+// GObject convenience macro for declaring stuff.
+G_DECLARE_FINAL_TYPE(Image2GB, image2gb, IMAGE2GB,, GimpPlugIn)
+
+/** Generic initialization for this plugin class, called before instancing it.
+ *
+ * \param[in] POclass Pointer to the plugin class.
  */
 static void
-image2gb_query(void);
+image2gb_class_init(Image2GBClass* POclass);
 
-/** Called when the plugin is run, it does the job.
+/** Initializes a particular instance of this plugin.
+ *
+ * \param[in] POinstance Pointer to the plugin instance to initialize.
  */
 static void
-image2gb_run(const gchar* Sname, gint InumParams, const GimpParam* Gparams, gint* InumReturnVals, GimpParam** GreturnVals);
+image2gb_init(Image2GB* POinstance);
 
-/** Checks the validity of the image for being exported to Game Boy. Returns
- *  TRUE if it is valid, FALSE otherwise.
+/** Returns information about the procedures provided by this plugin.
+ *
+ * \param[in] POplugin Pointer to this GIMP plugin.
+ *
+ * \return Pointer to the list of procedures.
  */
-static gboolean
-image2gb_check_image(gint32 IimageID);
+static GList*
+image2gb_query_procedures(GimpPlugIn* POplugin);
 
-/** Opens a dialog window to let the user set the export parameters. Returns
- *  the program status.
+/** Creates and returns an instance of the requested procedure.
+ *
+ * \param[in] POplugin Pointer to this GIMP plugin.
+ * \param[in] Sname    Name of the procedure to create.
+ *
+ * \return Pointer to the requested procedure.
  */
-static GimpPDBStatusType
-image2gb_show_dialog(void);
+static GimpProcedure*
+image2gb_create_procedure(GimpPlugIn* POplugin,
+                          const gchar* Sname);
 
-/** Callback function for the GTK dialog window ("Export" or "Cancel" clicked).
+/** Runs the "menu" (GUI export window in Tools/) procedure of this plugin.
+ *
+ * \param[in] POprocedure Pointer to the procedure.
+ * \param[in] ErunMode    The run mode (interactive or not).
+ * \param[in] POimage     Pointer to the current image.
+ * \param[in] Adrawables  Array of selected drawables.
+ * \param[in] POconfig    Pointer to the procedure config.
+ * \param[in] PrunData    Pointer to the run data.
+ *
+ * \return Pointer to the list of return values.
+ */
+extern GimpValueArray*
+image2gb_run_menu(GimpProcedure*       POprocedure,
+                  GimpRunMode          ErunMode,
+                  GimpImage*           POimage,
+                  GimpDrawable**       Adrawables,
+                  GimpProcedureConfig* POconfig,
+                  gpointer             PrunData);
+
+/** Runs the "save" (Export... option in File/) procedure of this plugin.
+ *
+ * \param[in] POprocedure Pointer to the procedure.
+ * \param[in] ErunMode    The run mode (interactive or not).
+ * \param[in] POimage     Pointer to the current image.
+ * \param[in] POfile      Pointer to the chosen output file.
+ * \param[in] POoptions   Pointer to the export options.
+ * \param[in] POmetadata  Pointer to the metadata.
+ * \param[in] POconfig    Pointer to the procedure config.
+ * \param[in] PrunData    Pointer to the run data.
+ *
+ * \return Pointer to the list of return values.
+ */
+extern GimpValueArray*
+image2gb_run_save(GimpProcedure*       POprocedure,
+                  GimpRunMode          ErunMode,
+                  GimpImage*           POimage,
+                  GFile*               POfile,
+                  GimpExportOptions*   POoptions,
+                  GimpMetadata*        POmetadata,
+                  GimpProcedureConfig* POconfig,
+                  gpointer             PrunData);
+
+/** Performs plugin cleanup.
+ *
+ * \param[in] POinstance Pointer to the plugin instance to clean.
  */
 static void
-image2gb_dialog_response(GtkWidget* Wwidget, gint IresponseID, gpointer Pdata);
+image2gb_dispose(GObject* POinstance);
 
-/** Tries to load existing export parameters from the parasite. Returns TRUE if
- *  success, FALSE otherwise.
+/** Shows a message to the user, either in console if running non-interactively
+ *  or with a modal GUI window otherwise.
+ *
+ * \param[in] ErunMode The run mode (interactive or not).
+ * \param[in] Smessage String containing the message to show.
  */
-static gboolean
-image2gb_load_parameters(gint32 IimageID);
-
-/** Saves the current export parameters using a parasite.
- */
-static void
-image2gb_save_parameters(gint32 IimageID);
+extern void
+report_message(GimpRunMode ErunMode, const char* Smessage);
