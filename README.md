@@ -152,7 +152,8 @@ set the ROM bank number (0 for using the default bank). Click *[OK]*. The plugin
 will generate two files, a .h header and a .c source file, containing the asset
 and everything else needed.
 
-To use it in your game with GBDK-2020, add the two files to your project and:
+To use it in your game with GBDK-2020, add the two files to your project and
+(replace "Name" and "NAME" accordingly):
 
 	// Load the tile data at the start of VRAM.
 	set_bkg_data(0U, BACKGROUND_NAME_TILES, BackgroundDataName);
@@ -164,8 +165,9 @@ To use it in your game with GBDK-2020, add the two files to your project and:
 	DISPLAY_ON;
 
 In case you chose a ROM bank number different than 0, do not forget to switch to
-it (with `SWITCH_ROM(BANK(BACKGROUND_NAME))` for example) before trying to
-load the background.
+it (with `SWITCH_ROM(BANK(BACKGROUND_NAME));` for example) before trying to
+load the background. Of course, you will have to place the asset in the proper
+bank during compilation.
 
 The syntax and code formatting follow the same conventions I use in my source
 code, but it is very easy to modify if you want to. Edit `source_strings.h` and
@@ -203,9 +205,9 @@ Troubleshooting
 
 **A4** You are probably running the legacy 2.0 version of GIMP. Since early
        2025 version 3.0 is the default stable branch, so you should update. If
-	   you do not want or are unable to, download an older v1.x
-	   [release](https://github.com/DaSalba/Image2GB/releases) of my plugin.
-	   From 2.0 onwards only GIMP 3 is supported.
+       you do not want or are unable to, download an older v1.x
+       [release](https://github.com/DaSalba/Image2GB/releases) of my plugin.
+       From 2.0 onwards only GIMP 3 is supported.
 
 **Q5: Could I use your plugin to compose my game maps and tilesets?**
 
