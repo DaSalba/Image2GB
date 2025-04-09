@@ -493,7 +493,7 @@ show_dialog(GimpProcedure* POprocedure, GimpProcedureConfig* POconfig)
 static gboolean
 load_parameters(GimpProcedureConfig* POconfig, GimpRunMode ErunMode)
 {
-	char StruncatedName[IMAGE2GB_ASSET_NAME_MAX + 1]; /**< String buffer for shortening the asset name if needed. */
+	char StruncatedName[IMAGE2GB_ASSET_NAME_MAX + 1] = {'\0'}; /**< String buffer for shortening the asset name if needed. */
 	
 	GFile* POparamFolder = NULL; /**< Virtual file object for retrieving the "output path" parameter. */
 	
@@ -515,11 +515,9 @@ load_parameters(GimpProcedureConfig* POconfig, GimpRunMode ErunMode)
 	// Truncate the asset name if longer than 32 characters.
 	if (strlen((char*) SparamAssetName) > IMAGE2GB_ASSET_NAME_MAX)
 	{
-		// Copy the first 32 characters into the buffer.
+		// Copy the first 32 characters into the buffer (character 33 will be
+		// left untouched and still equal to the null-terminator '\0').
 		strncpy((char*) StruncatedName, (char*) SparamAssetName, IMAGE2GB_ASSET_NAME_MAX);
-		
-		// Make the string null-terminated.
-		StruncatedName[IMAGE2GB_ASSET_NAME_MAX] = '\0';
 		
 		// Replace the original asset name with the truncated one.
 		g_free(SparamAssetName);

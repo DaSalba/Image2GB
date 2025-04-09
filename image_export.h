@@ -7,9 +7,9 @@
 
 #include <libgimp/gimp.h>
 #include <ctype.h>
+#include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <errno.h>
 
 #include "image2gb.h"
 #include "source_strings.h"
@@ -218,18 +218,18 @@ image2gb_convert_tile(ImageTile* POimageTile, DataTile* POdataTile)
 	// square 8x8 pixels area of the image, 64 pixels in total. We have 2
 	// variable types:
 	//
-	// 1- ImageTile, filled with 64 char that contain the values of
+	// 1- ImageTile, filled with 64 unsigned char that contain the values of
 	//    every pixel of this tile. Every pixel has a color index value from 0
 	//    (lightest green) to 3 (darkest green). Example with random values:
 	//
-	//    char ImageTile[64]: [1 0 3 0 2 1 0 3
-	//                         0 1 3 2 1 0 2 0
-	//                         0 1 2 0 3 1 1 2
-	//                         0 3 0 2 3 1 0 2
-	//                         3 1 0 3 0 2 3 0
-	//                         0 2 1 3 0 3 2 1
-	//                         0 3 3 2 1 0 1 2
-	//                         3 0 2 3 1 0 2 2]
+	//    unsigned char ImageTile[64]: [1 0 3 0 2 1 0 3
+	//                                  0 1 3 2 1 0 2 0
+	//                                  0 1 2 0 3 1 1 2
+	//                                  0 3 0 2 3 1 0 2
+	//                                  3 1 0 3 0 2 3 0
+	//                                  0 2 1 3 0 3 2 1
+	//                                  0 3 3 2 1 0 1 2
+	//                                  3 0 2 3 1 0 2 2]
 	//
 	// 2- DataTile, which also represents a tile, in this case using 8 rows of
 	//    uint16 (16 bits per row, each pixel is 2 bits, so 8 pixels per row).
@@ -246,7 +246,7 @@ image2gb_convert_tile(ImageTile* POimageTile, DataTile* POdataTile)
 	//                       00000000 00000000]
 	//
 	// For every pixel in ImageTile, we have to get those significant last 2
-	// bits of the char containing the color value, and place them in
+	// bits of the unsigned char containing the color value, and place them in
 	// the right position of their row in DataTile. But the Game Boy uses a very
 	// specific format. Instead of storing those 2 bits consecutively, the low
 	// bit (the rightmost one) is stored in the first byte of the tile, and the
@@ -275,28 +275,28 @@ image2gb_convert_tile(ImageTile* POimageTile, DataTile* POdataTile)
 	//
 	// When all 64 pixels are processed, this tile is done.
 	
-	char UCbitPair = 1; /**< Current bit pair to write (we go left to right). */
-	char UCtileRow = 0; /**< Current row being written in this tile. */
+	unsigned int UIbitPair = 1; /**< Current bit pair to write (we go left to right). */
+	unsigned int UItileRow = 0; /**< Current row being written in this tile. */
 	
-	for (char pixel = 0; pixel < 64; pixel++)
+	for (unsigned int pixel = 0; pixel < 64; pixel++)
 	{
 		// Get the individual bits of the color value, low (right) and high
 		// (left). Important: the variables must be 16-bit.
-		uint16_t UClowBit  = (* POimageTile)[pixel] & 0x1;        // Mask against 00000001.
-		uint16_t UChighBit = ((* POimageTile)[pixel] & 0x2) >> 1; // Mask against 00000010.
+		uint16_t UI16lowBit  = (* POimageTile)[pixel] & 0x1;        // Mask against 00000001.
+		uint16_t UI16highBit = ((* POimageTile)[pixel] & 0x2) >> 1; // Mask against 00000010.
 		
 		// Shift bits to the left and store them.
-		POdataTile->row[UCtileRow] = (POdataTile->row[UCtileRow] | (UClowBit << (16 - UCbitPair)));
-		POdataTile->row[UCtileRow] = (POdataTile->row[UCtileRow] | (UChighBit << (8 - UCbitPair)));
+		POdataTile->row[UItileRow] = (POdataTile->row[UItileRow] | (UI16lowBit << (16 - UIbitPair)));
+		POdataTile->row[UItileRow] = (POdataTile->row[UItileRow] | (UI16highBit << (8 - UIbitPair)));
 		
 		// Row finished? Switch to the next.
-		if (UCbitPair == 8)
+		if (UIbitPair == 8)
 		{
-			UCbitPair = 1;
-			UCtileRow++;
+			UIbitPair = 1;
+			UItileRow++;
 		}
 		else
-			UCbitPair++;
+			UIbitPair++;
 	}
 }
 
@@ -544,10 +544,7 @@ image2gb_write_tile_data(FILE* POfileOut)
 		}
 		
 		// Do not write a comma after the last tile.
-		if (UIprintCount < UItileCount)
-			fprintf(POfileOut, ",\n");
-		else
-			fprintf(POfileOut, "\n");
+		fprintf(POfileOut, (UIprintCount < UItileCount) ? ",\n" : "\n");
 	}
 }
 
