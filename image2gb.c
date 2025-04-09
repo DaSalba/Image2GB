@@ -337,7 +337,7 @@ image2gb_run_save(GimpProcedure*       POprocedure,
 		                                        POerror);
 	}
 	
-	// If exporting for the first time, need to show the dialog. First, we
+	// If exporting for the first time, we need to show the dialog. First, we
 	// recover 2 parameters (asset name and output path) from the destination
 	// the user gave at the file export dialog.
 	if (ErunMode == GIMP_RUN_INTERACTIVE)
@@ -356,7 +356,7 @@ image2gb_run_save(GimpProcedure*       POprocedure,
 		SparamFolder = g_path_get_dirname(g_file_get_path(POfile));
 		POparamFolder = g_file_new_for_path(SparamFolder);
 		
-		// Write the parameters we just computed.
+		// Store the parameters we just computed into the plugin data.
 		g_object_set(POconfig,
 		             IMAGE2GB_PARAM_ASSET_NAME, SparamAssetName,
 		             IMAGE2GB_PARAM_FOLDER, POparamFolder,
@@ -482,6 +482,9 @@ show_dialog(GimpProcedure* POprocedure, GimpProcedureConfig* POconfig)
 	POdialog = gimp_procedure_dialog_new(POprocedure,
 	                                     GIMP_PROCEDURE_CONFIG(POconfig),
 	                                     IMAGE2GB_DESCRIPTION_SHORT);
+	                                     
+	// This will populate the dialog with the necessary widgets, according to
+	// the parameters of this plugin.
 	gimp_procedure_dialog_fill(GIMP_PROCEDURE_DIALOG(POdialog), NULL);
 	
 	return gimp_procedure_dialog_run(GIMP_PROCEDURE_DIALOG(POdialog));

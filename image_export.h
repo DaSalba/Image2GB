@@ -85,8 +85,8 @@ image2gb_read_image_tiles(GimpImage* POimage, GimpRunMode ErunMode);
 
 /** Parses an ImageTile (GIMP format) and computes a DataTile (Game Boy format).
  *
- * \param[in] POimageTile Pointer to the image tile to parse.
- * \param[in] POdataTile  Pointer to the data tile to write.
+ * \param[in]  POimageTile Pointer to the image tile to parse.
+ * \param[out] POdataTile  Pointer to the data tile to write.
  */
 static void
 image2gb_convert_tile(ImageTile* POimageTile, DataTile* POdataTile);
@@ -223,13 +223,13 @@ image2gb_convert_tile(ImageTile* POimageTile, DataTile* POdataTile)
 	//    (lightest green) to 3 (darkest green). Example with random values:
 	//
 	//    char ImageTile[64]: [1 0 3 0 2 1 0 3
-	//                                  0 1 3 2 1 0 2 0
-	//                                  0 1 2 0 3 1 1 2
-	//                                  0 3 0 2 3 1 0 2
-	//                                  3 1 0 3 0 2 3 0
-	//                                  0 2 1 3 0 3 2 1
-	//                                  0 3 3 2 1 0 1 2
-	//                                  3 0 2 3 1 0 2 2]
+	//                         0 1 3 2 1 0 2 0
+	//                         0 1 2 0 3 1 1 2
+	//                         0 3 0 2 3 1 0 2
+	//                         3 1 0 3 0 2 3 0
+	//                         0 2 1 3 0 3 2 1
+	//                         0 3 3 2 1 0 1 2
+	//                         3 0 2 3 1 0 2 2]
 	//
 	// 2- DataTile, which also represents a tile, in this case using 8 rows of
 	//    uint16 (16 bits per row, each pixel is 2 bits, so 8 pixels per row).
@@ -282,7 +282,7 @@ image2gb_convert_tile(ImageTile* POimageTile, DataTile* POdataTile)
 	{
 		// Get the individual bits of the color value, low (right) and high
 		// (left). Important: the variables must be 16-bit.
-		uint16_t UClowBit = (* POimageTile)[pixel] & 0x1;         // Mask against 00000001.
+		uint16_t UClowBit  = (* POimageTile)[pixel] & 0x1;        // Mask against 00000001.
 		uint16_t UChighBit = ((* POimageTile)[pixel] & 0x2) >> 1; // Mask against 00000010.
 		
 		// Shift bits to the left and store them.

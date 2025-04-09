@@ -8,13 +8,14 @@ file, `Game-Boy-Pocket.gpl`, with the Game Boy Pocket palette (shades of gray).
 Install
 -------
 
-To install it, either copy the file yourself (to the directory
-`$HOME/.config/GIMP/<VERSION>/palettes/` on Linux, or
-`C:\Users\<USER>\AppData\Roaming\GIMP\<VERSION>\palettes\` on Windows), or run
-GIMP, activate menu *Windows->Dockable Dialogs->Palettes* to open the palette
-list in the right side bar, and then right-click the list and choose
-*Import Palette...*, and select *Palette file* as the source. Point to the .gpl
-file and click *[Import]*.
+To install it, either copy the file yourself to your GIMP's palette location (by
+default it is `$HOME/.config/GIMP/<VERSION>/palettes/` on Linux, or
+`C:\Users\<USER>\AppData\Roaming\GIMP\<VERSION>\palettes\` on Windows, you can
+check this in *Edit->Preferences->Folders->Palettes*); or run GIMP, activate
+menu *Windows->Dockable Dialogs->Palettes* to open the palette list in the right
+side bar, and then right-click the list and choose *Import Palette...*, and
+select *Palette file* as the source. Point to the .gpl file and click
+*[Import]*.
 
 Create image
 ------------
@@ -46,12 +47,14 @@ Try not to make the image too complex. The Game Boy's video memory has space for
 128 sprite patterns, 128 background tiles, and 128 shared by both. That is, you
 can have up to 256 background tiles at any moment (384 using a hack), yet a
 fullscreen sized image (160x144 pixels) with no duplicate tiles would need 360.
+An image with many empty or repeating tiles is preferrable to one where every
+tile is unique.
 
 Needless to say, you should make good use of the *Image->Crop to content* GIMP
 command to make sure the image contains as little data as possible (check that
 the dimensions are still multiples of 8 after running it). GBDK-2020 allows you
 to place a background beginning at a specific horizontal and vertical offset, so
-there is not need for you to align and/or center content by adding padding space
+there is no need for you to align and/or center content by adding padding space
 in GIMP. You will adjust that from your code later.
 
 Import image
@@ -90,8 +93,8 @@ To build and install the plugin, just run this command in this directory:
 
 It will automatically compile the plugin and copy it to
 `$HOME/.config/GIMP/<VERSION>/plug-ins/`. If you get a "command not found"
-error, make sure you have `libgimp3.0-dev` (`gimp-devel-tools` on Fedora)
-installed on your system.
+error, make sure you have GIMP 3 and the necessary packages installed
+(`libgimp3.0-dev` on Debian, `gimp-devel-tools` on Fedora).
 
 Windows
 -------
@@ -137,14 +140,14 @@ give the same final product):
 1. *Tools->Game Boy (GBDK-2020)*. It will always show the export dialog.
 2. *File->Export...*, then save it as a .gbdk or choose *Game Boy (GBDK-2020)*
    from the file type dropdown list. The first time it will show the dialog, the
-   next time you can just choose *File->Export to <NAME>.gbdk* or hit *CTRL+E*
+   next time you can just choose *File->Export to \<NAME\>.gbdk* or hit *CTRL+E*
    to export it again with the last used options, skipping the dialog (quicker).
 
 ![Export dialog](GIMP_export_dialog.png "GIMP export dialog of the plugin")
 
 In the self-explanatory plugin export dialog, just input the name you want for
 the asset (try to keep it short and a valid C identifier, it will be the base
-name for the variables), choose the destination path by clicking the button, and
+name for the variables), choose the destination path by clicking the widget, and
 set the ROM bank number (0 for using the default bank). Click *[OK]*. The plugin
 will generate two files, a .h header and a .c source file, containing the asset
 and everything else needed.
@@ -165,8 +168,8 @@ it (with `SWITCH_ROM(BANK(BACKGROUND_NAME))` for example) before trying to
 load the background.
 
 The syntax and code formatting follow the same conventions I use in my source
-code, but it is very easy to modify if you want to. Edit `source_strings.h` to
-suit your needs.
+code, but it is very easy to modify if you want to. Edit `source_strings.h` and
+`image_export.h` to suit your needs.
 
 Troubleshooting
 ===============
@@ -182,7 +185,7 @@ Troubleshooting
 **Q2: I cannot run the plugin, the menu option is greyed out.**
 
 **A2:** See error above. Also, sometimes GIMP seems to get "stuck" despite
-        converting the image to indexed mode, and thinks it still is RGB. To fix
+        converting the image to indexed mode, and thinks it is still RGB. To fix
         that, create a new image following the instructions, make sure you can
         export it, then copy the other one and paste. Remember to flatten the
         image to merge all layers. If the error persists, remove GIMP's config
