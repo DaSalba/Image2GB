@@ -525,8 +525,6 @@ image2gb_write_tile_data(FILE* POfileOut)
 		if (AdataTiles[tile].duplicate == TRUE)
 			continue;
 			
-		UIprintCount++;
-		
 		// We do not check for success, we take for granted that we can write.
 		fprintf(POfileOut, "\t");
 		
@@ -542,6 +540,8 @@ image2gb_write_tile_data(FILE* POfileOut)
 			if (row != (IMAGE2GB_TILE_SIZE - 1))
 				fprintf(POfileOut, ", ");
 		}
+		
+		UIprintCount++;
 		
 		// Do not write a comma after the last tile.
 		fprintf(POfileOut, (UIprintCount < UItileCount) ? ",\n" : "\n");

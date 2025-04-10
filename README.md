@@ -152,8 +152,8 @@ set the ROM bank number (0 for using the default bank). Click *[OK]*. The plugin
 will generate two files, a .h header and a .c source file, containing the asset
 and everything else needed.
 
-To use it in your game with GBDK-2020, add the two files to your project and
-(replace "Name" and "NAME" accordingly):
+To show it in your GBDK-2020 game, add the two files to your project and use
+code like this (replace "Name" and "NAME" accordingly):
 
 	// Load the tile data at the start of VRAM.
 	set_bkg_data(0U, BACKGROUND_NAME_TILES, BackgroundDataName);
