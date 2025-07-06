@@ -1,6 +1,6 @@
 /**
  * @file  source_strings.h
- * @brief Premade strings containing C source code for an image asset in GBDK-2020 - header.
+ * @brief Premade strings containing C source code for an image asset in GBDK-2020.
  */
 
 #pragma once
@@ -28,10 +28,10 @@ static const char* SsourceStringH =
     "\n"
     "// CONSTANTS ///////////////////////////////////////////////////////////////////\n"
     "\n"
-    "#define BACKGROUND_%s_TILES %uU /**< How many unique tiles this background has. */\n"
+    "enum { BACKGROUND_%s_TILES = %uU }; /**< How many unique tiles this background has. */\n"
     "\n"
-    "#define BACKGROUND_%s_SIZE_X %uU /**< Width of this background, in 8x8 tiles (columns). */\n"
-    "#define BACKGROUND_%s_SIZE_Y %uU /**< Height of this background, in 8x8 tiles (rows). */\n"
+    "enum { BACKGROUND_%s_SIZE_X = %s%uU }; /**< Width of this background, in tiles (columns). */\n"
+    "enum { BACKGROUND_%s_SIZE_Y = %s%uU }; /**< Height of this background, in tiles (rows).   */\n"
     "\n"
     "/** %s (data), exported by Image2GB for use with GBDK-2020.\n"
     " */\n"

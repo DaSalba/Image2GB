@@ -1,6 +1,6 @@
 /**
  * @file  image2gb.c
- * @brief GIMP plugin to export an image to Game Boy data (C code, for use with GBDK-2020) - implementation.
+ * @brief GIMP plug-in to export an image to Game Boy data (C code, for use with GBDK-2020) - implementation.
  */
 
 #include "image2gb.h"
@@ -13,24 +13,24 @@
 
 // CONSTANTS ///////////////////////////////////////////////////////////////////
 
+enum { IMAGE2GB_SENSITIVITY = GIMP_PROCEDURE_SENSITIVE_DRAWABLE }; /**< Which content this plug-in supports. */
+
 #define IMAGE2GB_BINARY_NAME "image2gb" /**< Name of the output binary. */
 
-#define IMAGE2GB_PROCEDURE_MENU   "plug-in-image2gb-menu"   /**< Name of the procedure registered as menu entry. */
+#define IMAGE2GB_PROCEDURE_MENU   "plug-in-image2gb-menu"   /**< Name of the procedure registered as menu entry.          */
 #define IMAGE2GB_PROCEDURE_EXPORT "plug-in-image2gb-export" /**< Name of the procedure registered as file export handler. */
 
-#define IMAGE2GB_MENU_PATH  "<Image>/Tools"        /**< Window area and menu path the plugin will appear in. */
+#define IMAGE2GB_MENU_PATH  "<Image>/Tools"        /**< Window area and menu path the plug-in will appear in.        */
 #define IMAGE2GB_MENU_LABEL "Game Boy (GBDK-2020)" /**< Entry that will appear in the menus and "Export as" dialog. */
 
-#define IMAGE2GB_ASSOCIATED_MIME_TYPE "text/plain" /**< MIME file type that will be associated with this plugin. */
-#define IMAGE2GB_ASSOCIATED_EXTENSION "gbdk"       /**< File extension that will be associated with this plugin. */
+#define IMAGE2GB_ASSOCIATED_MIME_TYPE "text/plain" /**< MIME file type that will be associated with this plug-in. */
+#define IMAGE2GB_ASSOCIATED_EXTENSION "gbdk"       /**< File extension that will be associated with this plug-in. */
 
-#define IMAGE2GB_SENSITIVITY GIMP_PROCEDURE_SENSITIVE_DRAWABLE /**< Which content this plugin supports. */
-
-#define IMAGE2GB_PARAM_ASSET_NAME "asset-name" /**< Parameter ID of the asset name. */
+#define IMAGE2GB_PARAM_ASSET_NAME "asset-name" /**< Parameter ID of the asset name.  */
 #define IMAGE2GB_PARAM_FOLDER     "folder"     /**< Parameter ID of the output path. */
 #define IMAGE2GB_PARAM_BANK       "bank"       /**< Parameter ID of the bank number. */
 
-// Plugin documentation and attribution strings.
+// Plug-in documentation and attribution strings.
 #define IMAGE2GB_DESCRIPTION_SHORT "Export image to Game Boy data"
 #define IMAGE2GB_DESCRIPTION_LONG  "Exports an indexed 4-color image to Game Boy data (C code, for use with GBDK-2020)."
 #define IMAGE2GB_AUTHOR            "DaSalba"
@@ -46,7 +46,7 @@ unsigned int UIparamBank;
 
 static GObjectClass* POparentClass; /**< Pointer to the parent class. */
 
-static GList* PLprocedures; /**< Pointer to the list of procedures this plugin provides. */
+static GList* PLprocedures; /**< Pointer to the list of procedures this plug-in provides. */
 
 // FUNCTIONS ///////////////////////////////////////////////////////////////////
 
@@ -60,7 +60,7 @@ static GList* PLprocedures; /**< Pointer to the list of procedures this plugin p
 static gboolean
 check_image(GimpImage* POimage, GimpRunMode ErunMode);
 
-/** Shows a dialog window where the user can input the plugin parameters.
+/** Shows a dialog window where the user can input the plug-in parameters.
  *
  * \param[in] POprocedure Pointer to the procedure.
  * \param[in] POconfig    Pointer to the procedure config.
@@ -70,7 +70,7 @@ check_image(GimpImage* POimage, GimpRunMode ErunMode);
 static gboolean
 show_dialog(GimpProcedure* POprocedure, GimpProcedureConfig* POconfig);
 
-/** Retrieves the current value of the plugin parameters (asset name, output
+/** Retrieves the current value of the plug-in parameters (asset name, output
  *  path and bank number) from the configuration, and stores them in global
  *  variables. It also checks their validity.
  *
@@ -95,10 +95,10 @@ image2gb_class_init(Image2GBClass* POclass)
 {
 	// Override the generic cleanup function.
 	GObjectClass* POgenericClass = G_OBJECT_CLASS(POclass);
-	POgenericClass->dispose = image2gb_dispose;
+	POgenericClass->dispose      = image2gb_dispose;
 	
 	// Override the query and create functions.
-	GimpPlugInClass* POpluginClass = GIMP_PLUG_IN_CLASS(POclass);
+	GimpPlugInClass* POpluginClass  = GIMP_PLUG_IN_CLASS(POclass);
 	POpluginClass->query_procedures = image2gb_query_procedures;
 	POpluginClass->create_procedure = image2gb_create_procedure;
 	
@@ -121,7 +121,7 @@ image2gb_query_procedures(GimpPlugIn* POplugin)
 		PLprocedures = NULL;
 	}
 	
-	// This plugin only has 2 procedures.
+	// This plug-in only has 2 procedures.
 	PLprocedures = g_list_append(PLprocedures, g_strdup(IMAGE2GB_PROCEDURE_MENU));
 	PLprocedures = g_list_append(PLprocedures, g_strdup(IMAGE2GB_PROCEDURE_EXPORT));
 	
@@ -143,7 +143,7 @@ image2gb_create_procedure(GimpPlugIn* POplugin,
 		                                       
 		// Register a menu entry in Tools/.
 		gimp_procedure_set_menu_label(POprocedure, IMAGE2GB_MENU_LABEL);
-		gimp_procedure_add_menu_path(POprocedure, IMAGE2GB_MENU_PATH);
+		gimp_procedure_add_menu_path(POprocedure,  IMAGE2GB_MENU_PATH);
 	}
 	// 2) File export procedure.
 	else if (g_strcmp0(Sname, IMAGE2GB_PROCEDURE_EXPORT) == 0)
@@ -163,15 +163,15 @@ image2gb_create_procedure(GimpPlugIn* POplugin,
 		gimp_file_procedure_set_mime_types(GIMP_FILE_PROCEDURE(POprocedure),
 		                                   IMAGE2GB_ASSOCIATED_MIME_TYPE);
 		                                   
-		// Register the file extension this procedure supports. NOTE: the plugin
-		// does not really save a file with this extension, it actually saves 2
-		// files, a .c source and a .h header. This association is a just a
-		// shortcut to make it easier for the user (also, GIMP already has
-		// handlers for exporting images to .c and .h extensions).
+		// Register the file extension this procedure supports. NOTE: the
+		// plug-in does not really save a file with this extension, it actually
+		// saves 2 files, a .c source and a .h header. This association is a
+		// just a shortcut to make exporting easier for the user (also, GIMP
+		// already has handlers for exporting images to .c and .h extensions).
 		gimp_file_procedure_set_extensions(GIMP_FILE_PROCEDURE(POprocedure),
 		                                   IMAGE2GB_ASSOCIATED_EXTENSION);
 		                                   
-		// Set the default file export capabilities for this plugin.
+		// Set the default file export capabilities for this plug-in.
 		gimp_export_procedure_set_capabilities(GIMP_EXPORT_PROCEDURE(POprocedure),
 		                                       GIMP_EXPORT_CAN_HANDLE_INDEXED,
 		                                       NULL, NULL, NULL);
@@ -181,10 +181,10 @@ image2gb_create_procedure(GimpPlugIn* POplugin,
 		gimp_file_procedure_set_priority(GIMP_FILE_PROCEDURE(POprocedure), 0);
 	}
 	
-	// Both procedures have the same metadata (plugin info) and parameters.
+	// Both procedures have the same metadata (plug-in info) and parameters.
 	if (POprocedure)
 	{
-		// What type of content this plugin will support for exporting.
+		// What type of content this plug-in will support for exporting.
 		gimp_procedure_set_sensitivity_mask(POprocedure, IMAGE2GB_SENSITIVITY);
 		gimp_procedure_set_image_types(POprocedure, "INDEXED");
 		
@@ -240,7 +240,7 @@ image2gb_run_menu(GimpProcedure*       POprocedure,
 	
 	IdrawablesCount = gimp_core_object_array_get_length((GObject**) Adrawables);
 	
-	// Check that the conditions to run the plugin are met.
+	// Check that the conditions to run the plug-in are met.
 	if (IdrawablesCount != 1)
 	{
 		GError* POerror = NULL;
@@ -346,23 +346,23 @@ image2gb_run_save(GimpProcedure*       POprocedure,
 		// (file without path), and remove the extension, if any, so we get the
 		// asset name.
 		SparamAssetName = g_path_get_basename(g_file_get_path(POfile));
-		PCdotExtension = strrchr(SparamAssetName, '.');
+		PCdotExtension  = strrchr(SparamAssetName, '.');
 		
 		// Truncate the string at the last dot, if there was one.
 		if (PCdotExtension)
 			*PCdotExtension = '\0';
 			
 		// Extract the output directory.
-		SparamFolder = g_path_get_dirname(g_file_get_path(POfile));
+		SparamFolder  = g_path_get_dirname(g_file_get_path(POfile));
 		POparamFolder = g_file_new_for_path(SparamFolder);
 		
-		// Store the parameters we just computed into the plugin data.
+		// Store the parameters we just computed into the plug-in data.
 		g_object_set(POconfig,
 		             IMAGE2GB_PARAM_ASSET_NAME, SparamAssetName,
-		             IMAGE2GB_PARAM_FOLDER, POparamFolder,
+		             IMAGE2GB_PARAM_FOLDER,     POparamFolder,
 		             NULL);
 		             
-		// Show the plugin config dialog. If the user cancels it, do nothing
+		// Show the plug-in config dialog. If the user cancels it, do nothing
 		// (this is not an error).
 		if (! show_dialog(POprocedure, POconfig))
 			return gimp_procedure_new_return_values(POprocedure, GIMP_PDB_CANCEL, NULL);
@@ -397,7 +397,7 @@ image2gb_dispose(GObject* Pobject)
 		PLprocedures = NULL;
 	}
 	
-	// Free memory of global variables (plugin parameters).
+	// Free memory of global variables (plug-in parameters).
 	g_free(SparamAssetName);
 	g_free(SparamFolder);
 	
@@ -423,8 +423,8 @@ check_image(GimpImage* POimage, GimpRunMode ErunMode)
 	char* SformattedMessage; /**< String used to print error messages. */
 	
 	// Check that size is between 8x8 (1 tile) and 256x256 (32x32 tiles).
-	if ((gimp_image_get_width(POimage) < IMAGE2GB_IMAGE_SIZE_MIN)
-	    || (gimp_image_get_width(POimage) > IMAGE2GB_IMAGE_SIZE_MAX)
+	if ((gimp_image_get_width(POimage)     < IMAGE2GB_IMAGE_SIZE_MIN)
+	    || (gimp_image_get_width(POimage)  > IMAGE2GB_IMAGE_SIZE_MAX)
 	    || (gimp_image_get_height(POimage) < IMAGE2GB_IMAGE_SIZE_MIN)
 	    || (gimp_image_get_height(POimage) > IMAGE2GB_IMAGE_SIZE_MAX))
 	{
@@ -438,7 +438,7 @@ check_image(GimpImage* POimage, GimpRunMode ErunMode)
 	}
 	
 	// Also, size should be a multiple of 8 (whole tiles).
-	if (((gimp_image_get_width(POimage) % IMAGE2GB_TILE_SIZE) != 0)
+	if (((gimp_image_get_width(POimage)     % IMAGE2GB_TILE_SIZE) != 0)
 	    || ((gimp_image_get_height(POimage) % IMAGE2GB_TILE_SIZE) != 0))
 	{
 		SformattedMessage = g_strdup_printf("ERROR: width and height must be multiples of %d.",
@@ -457,7 +457,7 @@ check_image(GimpImage* POimage, GimpRunMode ErunMode)
 		if (gimp_palette_get_color_count(POpalette) != IMAGE2GB_IMAGE_COLORS)
 		{
 			report_message(ErunMode,
-			               "ERROR: the image should be 4-color only. To be sure, use the palette(s) provided with this plugin.");
+			               "ERROR: the image should be 4-color only. To be sure, use the palette(s) provided with this plug-in.");
 			               
 			return FALSE;
 		}
@@ -475,7 +475,7 @@ check_image(GimpImage* POimage, GimpRunMode ErunMode)
 static gboolean
 show_dialog(GimpProcedure* POprocedure, GimpProcedureConfig* POconfig)
 {
-	GtkWidget* POdialog; /**< Plugin GUI window (modeless). */
+	GtkWidget* POdialog; /**< Plug-in GUI window (modeless). */
 	
 	gimp_ui_init(IMAGE2GB_BINARY_NAME);
 	
@@ -484,7 +484,7 @@ show_dialog(GimpProcedure* POprocedure, GimpProcedureConfig* POconfig)
 	                                     IMAGE2GB_DESCRIPTION_SHORT);
 	                                     
 	// This will populate the dialog with the necessary widgets, according to
-	// the parameters of this plugin.
+	// the parameters of this plug-in.
 	gimp_procedure_dialog_fill(GIMP_PROCEDURE_DIALOG(POdialog), NULL);
 	
 	return gimp_procedure_dialog_run(GIMP_PROCEDURE_DIALOG(POdialog));

@@ -1,6 +1,6 @@
 /**
  * @file  image_export.h
- * @brief Functionality for exporting a GIMP indexed image to Game Boy data - header + implementation.
+ * @brief Functionality for exporting a GIMP indexed image to Game Boy data.
  */
 
 #pragma once
@@ -10,23 +10,24 @@
 #include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "image2gb.h"
 #include "source_strings.h"
 
 // CONSTANTS ///////////////////////////////////////////////////////////////////
 
-#define IMAGE2GB_TILE_SIZE 8 /**< Size of a tile, in pixels (any dimension). */
+enum { IMAGE2GB_TILE_SIZE = 8U }; /**< Size of a tile, in pixels (any dimension). */
 
-#define IMAGE2GB_IMAGE_TILES_VRAM_LIMIT 256 /**< How many unique tiles will fit in the Game Boy's VRAM at a time. */
+enum { IMAGE2GB_IMAGE_TILES_VRAM_LIMIT = 256U }; /**< How many unique tiles will fit in the Game Boy's VRAM at a time. */
 
-#define IMAGE2GB_IMAGE_SIZE_MIN IMAGE2GB_TILE_SIZE /**< Minimum acceptable image size, in pixels (any dimension). */
-#define IMAGE2GB_IMAGE_SIZE_MAX 256                /**< Maximum acceptable image size, in pixels (any dimension). */
+enum { IMAGE2GB_IMAGE_SIZE_MIN = IMAGE2GB_TILE_SIZE }; /**< Minimum acceptable image size, in pixels (any dimension). */
+enum { IMAGE2GB_IMAGE_SIZE_MAX =               256U }; /**< Maximum acceptable image size, in pixels (any dimension). */
 
-#define IMAGE2GB_IMAGE_COLORS 4 /**< How many colors there should be in the palette of an indexed image. */
+enum { IMAGE2GB_IMAGE_COLORS = 4U }; /**< How many colors there should be in the palette of an indexed image. */
 
-#define IMAGE2GB_ASSET_NAME_MAX  32 /**< Maximum length of the asset name used for the C variable identifier. */
-#define IMAGE2GB_BANK_MAX       255 /**< Last available ROM bank number. */
+enum { IMAGE2GB_ASSET_NAME_MAX =  32U }; /**< Maximum length of the asset name used for the C variable identifier. */
+enum { IMAGE2GB_BANK_MAX       = 255U }; /**< Last available ROM bank number.                                      */
 
 // DEFINITIONS /////////////////////////////////////////////////////////////////
 
@@ -49,17 +50,17 @@ typedef struct DataTile
 
 /** Array that stores all tiles of the image, in Game Boy data format.
  */
-static DataTile AdataTiles[(IMAGE2GB_IMAGE_SIZE_MAX / IMAGE2GB_TILE_SIZE)
+static DataTile AdataTiles[(IMAGE2GB_IMAGE_SIZE_MAX   / IMAGE2GB_TILE_SIZE)
                            * (IMAGE2GB_IMAGE_SIZE_MAX / IMAGE2GB_TILE_SIZE)];
 
 /** Array that stores the tilemap of the image, in Game Boy data format.
  */
-static unsigned int AtileMap[(IMAGE2GB_IMAGE_SIZE_MAX / IMAGE2GB_TILE_SIZE)
+static unsigned int AtileMap[(IMAGE2GB_IMAGE_SIZE_MAX   / IMAGE2GB_TILE_SIZE)
                              * (IMAGE2GB_IMAGE_SIZE_MAX / IMAGE2GB_TILE_SIZE)];
 
 static unsigned int UItileWidth;  /**< Horizontal size of the asset, in tiles. */
-static unsigned int UItileHeight; /**< Vertical size of the asset, in tiles. */
-static unsigned int UItileCount;  /**< Total number of tiles the asset has. */
+static unsigned int UItileHeight; /**< Vertical size of the asset, in tiles.   */
+static unsigned int UItileCount;  /**< Total number of tiles the asset has.    */
 
 // FUNCTIONS ///////////////////////////////////////////////////////////////////
 
@@ -127,7 +128,7 @@ image2gb_export_image(GimpImage* POimage, GimpRunMode ErunMode)
 	GimpPDBStatusType EreturnValue; /**< Return value (PDB status) of this procedure. */
 	
 	// Compute image statistics.
-	UItileWidth = (gimp_image_get_width(POimage) / IMAGE2GB_TILE_SIZE);
+	UItileWidth  = (gimp_image_get_width(POimage)  / IMAGE2GB_TILE_SIZE);
 	UItileHeight = (gimp_image_get_height(POimage) / IMAGE2GB_TILE_SIZE);
 	
 	// Try to read the image, and abort if it fails.
@@ -179,9 +180,9 @@ image2gb_read_image_tiles(GimpImage* POimage, GimpRunMode ErunMode)
 	PObuffer = gimp_drawable_get_buffer(Adrawables[0]);
 	
 	// Loop through all tiles of the GIMP image.
-	for (unsigned int row = 0; row < UItileHeight; row++)
+	for (unsigned int row = 0; row < UItileHeight; ++row)
 	{
-		for (unsigned int col = 0; col < UItileWidth; col++)
+		for (unsigned int col = 0; col < UItileWidth; ++col)
 		{
 			// Define the rectangle for the current tile.
 			GeglRectangle GRrectangle =
@@ -276,34 +277,34 @@ image2gb_convert_tile(ImageTile* POimageTile, DataTile* POdataTile)
 	// When all 64 pixels are processed, this tile is done.
 	
 	unsigned int UIbitPair = 1; /**< Current bit pair to write (we go left to right). */
-	unsigned int UItileRow = 0; /**< Current row being written in this tile. */
+	unsigned int UItileRow = 0; /**< Current row being written in this tile.          */
 	
-	for (unsigned int pixel = 0; pixel < 64; pixel++)
+	for (unsigned int pixel = 0; pixel < 64; ++pixel)
 	{
 		// Get the individual bits of the color value, low (right) and high
 		// (left). Important: the variables must be 16-bit.
-		uint16_t UI16lowBit  = (* POimageTile)[pixel] & 0x1;        // Mask against 00000001.
+		uint16_t UI16lowBit  = (* POimageTile)[pixel]  & 0x1;       // Mask against 00000001.
 		uint16_t UI16highBit = ((* POimageTile)[pixel] & 0x2) >> 1; // Mask against 00000010.
 		
 		// Shift bits to the left and store them.
-		POdataTile->row[UItileRow] = (POdataTile->row[UItileRow] | (UI16lowBit << (16 - UIbitPair)));
-		POdataTile->row[UItileRow] = (POdataTile->row[UItileRow] | (UI16highBit << (8 - UIbitPair)));
+		POdataTile->row[UItileRow] = (POdataTile->row[UItileRow] | (UI16lowBit  << (16 - UIbitPair)));
+		POdataTile->row[UItileRow] = (POdataTile->row[UItileRow] | (UI16highBit << (8  - UIbitPair)));
 		
 		// Row finished? Switch to the next.
 		if (UIbitPair == 8)
 		{
 			UIbitPair = 1;
-			UItileRow++;
+			++UItileRow;
 		}
 		else
-			UIbitPair++;
+			++UIbitPair;
 	}
 }
 
 static void
 image2gb_check_duplicates(void)
 {
-	unsigned int UIduplicateCount     = 0; /**< Number of duplicate tiles that were found. */
+	unsigned int UIduplicateCount     = 0; /**< Number of duplicate tiles that were found.                                  */
 	unsigned int UIpreviousDuplicates = 0; /**< Auxiliary variable for storing how many duplicates before the current tile. */
 	
 	gboolean BisDuplicate; /**< Auxiliary variable for checking if a tile is duplicate. */
@@ -312,7 +313,7 @@ image2gb_check_duplicates(void)
 	UItileCount = (UItileWidth * UItileHeight);
 	
 	// Initialize tilemap.
-	for (unsigned int tile = 0; tile < UItileCount; tile++)
+	for (unsigned int tile = 0; tile < UItileCount; ++tile)
 		AtileMap[tile] = tile;
 		
 	// Right now the image data has as many different tiles as the full original
@@ -329,12 +330,12 @@ image2gb_check_duplicates(void)
 	// duplicates before it so far, the correct tile value would be 26, not 37,
 	// because in the final tileset those 11 tiles before it will be removed.
 	
-	for (unsigned int tile = 0; tile < UItileCount; tile++)
+	for (unsigned int tile = 0; tile < UItileCount; ++tile)
 	{
 		// Do not check tiles already marked as duplicate.
 		if (AdataTiles[tile].duplicate == TRUE)
 		{
-			UIpreviousDuplicates++;
+			++UIpreviousDuplicates;
 			
 			continue;
 		}
@@ -345,12 +346,12 @@ image2gb_check_duplicates(void)
 		AtileMap[tile] = (tile - UIpreviousDuplicates);
 		
 		// Do not check previous tiles, only check forward.
-		for (unsigned int checktile = (tile + 1); checktile < UItileCount; checktile++)
+		for (unsigned int checktile = (tile + 1); checktile < UItileCount; ++checktile)
 		{
 			BisDuplicate = FALSE;
 			
 			// To see if they are equal, we have to compare row per row.
-			for (char row = 0; row < 8; row++)
+			for (char row = 0; row < 8; ++row)
 			{
 				if (AdataTiles[tile].row[row] != AdataTiles[checktile].row[row])
 					break;
@@ -362,7 +363,7 @@ image2gb_check_duplicates(void)
 			if (BisDuplicate)
 			{
 				AdataTiles[checktile].duplicate = TRUE;
-				UIduplicateCount++;
+				++UIduplicateCount;
 				
 				// Replace its value in the tilemap with the one of the tile it
 				// is a duplicate of (its value was already corrected above).
@@ -403,7 +404,7 @@ image2gb_write_files(GimpRunMode ErunMode)
 	// also in hexadecimal.
 	
 	// Get the all upper and lowercase versions of the asset name.
-	for (unsigned int c = 0; c < strlen(SparamAssetName); c++)
+	for (unsigned int c = 0; c < strlen(SparamAssetName); ++c)
 	{
 		SnameLowercase[c] = tolower(SparamAssetName[c]);
 		SnameUppercase[c] = toupper(SparamAssetName[c]);
@@ -428,16 +429,22 @@ image2gb_write_files(GimpRunMode ErunMode)
 	
 	// This part of the header only gets written if the asset is in a bank other
 	// than 0. It adds the necessary GBDK-2020 header and the BANKREFs.
-	SbankSupport = g_strdup_printf("#include <gb/gb.h>\n\nBANKREF_EXTERN(BACKGROUND_%s)", SnameUppercase);
-	
+	SbankSupport = g_strdup_printf("#include <gb/gb.h>\n#include <stdint.h>\n\nBANKREF_EXTERN(BACKGROUND_%s)",
+	                               SnameUppercase);
+	                               
 	// Check "source_strings.h" to see exactly what is getting printed here.
 	fprintf(POfileOut, SsourceStringH,
-	        SnameLowercase, SparamAssetName,
-	        UItileCount, (UItileWidth * UItileHeight), UItileWidth, UItileHeight,
+	        SnameLowercase,
+	        SparamAssetName,
+	        UItileCount,
+	        (UItileWidth * UItileHeight),
+	        UItileWidth, UItileHeight,
 	        (UItileWidth * IMAGE2GB_TILE_SIZE), (UItileHeight * IMAGE2GB_TILE_SIZE),
 	        UIparamBank,
 	        (UIparamBank == 0) ? "#include <stdint.h>" : (char*) SbankSupport,
-	        SnameUppercase, UItileCount, SnameUppercase, UItileWidth, SnameUppercase, UItileHeight,
+	        SnameUppercase, UItileCount,
+	        SnameUppercase, ((UItileWidth  < 10) && (UItileHeight > 10)) ? " " : "", UItileWidth,
+	        SnameUppercase, ((UItileHeight < 10) && (UItileWidth  > 10)) ? " " : "", UItileHeight,
 	        SparamAssetName, SparamAssetName, SparamAssetName, SparamAssetName);
 	        
 	g_free(SbankSupport);
@@ -475,12 +482,16 @@ image2gb_write_files(GimpRunMode ErunMode)
 	
 	// This part of the source only gets written if the asset is in a bank other
 	// than 0. It adds the necessary GBDK-2020 header and the BANKREFs.
-	SbankSupport = g_strdup_printf("#include <gb/gb.h>\n\nBANKREF(BACKGROUND_%s)", SnameUppercase);
-	
+	SbankSupport = g_strdup_printf("#include <gb/gb.h>\n#include <stdint.h>\n\nBANKREF(BACKGROUND_%s)",
+	                               SnameUppercase);
+	                               
 	// Check "source_strings.h" to see exactly what is getting printed here.
 	fprintf(POfileOut, SsourceStringC1,
-	        SnameLowercase, SparamAssetName,
-	        UItileCount, (UItileWidth * UItileHeight), UItileWidth, UItileHeight,
+	        SnameLowercase,
+	        SparamAssetName,
+	        UItileCount,
+	        (UItileWidth * UItileHeight),
+	        UItileWidth, UItileHeight,
 	        (UItileWidth * IMAGE2GB_TILE_SIZE), (UItileHeight * IMAGE2GB_TILE_SIZE),
 	        UIparamBank,
 	        SnameLowercase,
@@ -491,11 +502,13 @@ image2gb_write_files(GimpRunMode ErunMode)
 	
 	image2gb_write_tile_data(POfileOut);
 	
-	fprintf(POfileOut, SsourceStringC2, SparamAssetName);
-	
+	// Check "source_strings.h" to see exactly what is getting printed here.
+	fprintf(POfileOut, SsourceStringC2,
+	        SparamAssetName);
+	        
 	image2gb_write_tilemap(POfileOut);
 	
-	fprintf(POfileOut, "\n};");
+	fprintf(POfileOut, "};");
 	
 	if (fclose(POfileOut) != 0)
 	{
@@ -519,7 +532,7 @@ image2gb_write_tile_data(FILE* POfileOut)
 	unsigned int UIprintCount = 0; /**< Auxiliary variable to keep track of how many tiles we have written. */
 	
 	// Print one tile per line.
-	for (unsigned int tile = 0; tile < (UItileWidth * UItileHeight); tile++)
+	for (unsigned int tile = 0; tile < (UItileWidth * UItileHeight); ++tile)
 	{
 		// Ignore duplicate tiles.
 		if (AdataTiles[tile].duplicate == TRUE)
@@ -528,45 +541,114 @@ image2gb_write_tile_data(FILE* POfileOut)
 		// We do not check for success, we take for granted that we can write.
 		fprintf(POfileOut, "\t");
 		
-		// There are 8 rows, each row is 2 hex numbers, so 16 per line in total.
-		for (char row = 0; row < IMAGE2GB_TILE_SIZE; row++)
+		// Each tile has 64 (8x8) pixels, and a pixel is 2-bit (4 values), so
+		// there are 128 bits (16 bytes) per tile, written as hexadecimal
+		// numbers with the format "0xNN".
+		for (char row = 0; row < IMAGE2GB_TILE_SIZE; ++row)
 		{
 			// Shift right by 8 bits to write only the first half.
 			fprintf(POfileOut, "0x%02X, ", ((AdataTiles[tile].row[row]) >> 8));
 			// Mask against 00000000 11111111 to write only the second half.
 			fprintf(POfileOut, "0x%02X", ((AdataTiles[tile].row[row]) & 0xFF));
 			
-			// Do not write a comma after the last char of this tile.
+			// Do not write a comma after the last number of this tile.
 			if (row != (IMAGE2GB_TILE_SIZE - 1))
 				fprintf(POfileOut, ", ");
 		}
 		
-		UIprintCount++;
+		++UIprintCount;
 		
 		// Do not write a comma after the last tile.
-		fprintf(POfileOut, (UIprintCount < UItileCount) ? ",\n" : "\n");
+		fprintf(POfileOut, (UIprintCount < UItileCount) ? "," : "");
+		
+		// Check if we have to print a position marker (a comment with the tile
+		// number every 10th tile).
+		if ((UItileCount >= 10) && ((UIprintCount % 10) == 0))
+		{
+			// The last tile needs an additional space because it lacks a comma.
+			// Also, we insert spaces as needed before the number for alignment.
+			fprintf(POfileOut, "%s// <--- (%s%u)",
+			        (UIprintCount < UItileCount) ? " " : "  ",
+			        ((UItileCount >= 100) && (UIprintCount < 100)) ? " " : "",
+			        UIprintCount);
+		}
+		
+		fprintf(POfileOut, "\n");
 	}
 }
 
 static void
 image2gb_write_tilemap(FILE* POfileOut)
 {
-	// We do not check for success, we take for granted that we can write.
-	fprintf(POfileOut, "\t");
+	unsigned int UIspaces = 0; /**< How many spaces to write for padding. */
 	
-	for (unsigned int tile = 0; tile < (UItileWidth * UItileHeight); tile++)
+	// Check if we have to print a heading row with position markers (a comment
+	// with the column number every 10th column).
+	if (UItileWidth >= 10)
 	{
-		fprintf(POfileOut, "0x%02X", AtileMap[tile]);
+		// We do not check for success, we take for granted that we can write.
+		fprintf(POfileOut, "\t//");
 		
-		// If this is not the last tile of the map, print a separator.
-		if (tile != ((UItileWidth * UItileHeight) - 1))
+		for (unsigned int column = 10; column <= UItileWidth; column += 10)
 		{
-			// Print lines of "width" tiles maximum (so the output code has as
-			// many rows and columns as the image, for easier debugging).
-			if (((tile + 1) % UItileWidth) == 0)
-				fprintf(POfileOut, ",\n\t");
-			else
+			// The amount of spaces we have to write for padding is equal to the
+			// length of a tile ID (format "0xNN" plus the comma and space),
+			// times 9 (as we are writing the heading info every 10th tile).
+			// But, for the first heading we have to substract 2 spaces (because
+			// of the forward slashes that begin the comment), and for
+			// subsequent headings we have to: 1) Add one or 2 spaces depending
+			// on the length of the heading string (4 or 5 characters), to make
+			// it span the same as the tile ID below. 2) If printing 3-digit
+			// numbers (size 100 or greater) we also have to subtract one space.
+			UIspaces = (strlen("0x00, ") * 9)
+			           - ((column == 10) ? 2 : 0)
+			           + ((column != 10)
+			              ? ((UItileWidth >= 100) ? 1 : 2)
+			              : 0);
+			              
+			for (unsigned int space = 0; space < UIspaces; ++space)
+				fprintf(POfileOut, " ");
+				
+			fprintf(POfileOut, "(%s%u)",
+			        ((UItileWidth >= 100) && (column < 100)) ? " " : "",
+			        column);
+		}
+		
+		fprintf(POfileOut, "\n");
+	}
+	
+	for (unsigned int row = 0; row < UItileHeight; ++row)
+	{
+		fprintf(POfileOut, "\t");
+		
+		// Print lines of "width" tile IDs maximum (so the output code has as
+		// many rows and columns as the image, for easier debugging).
+		for (unsigned int column = 0; column < UItileWidth; ++column)
+		{
+			fprintf(POfileOut, "0x%02X", AtileMap[(row * UItileWidth) + column]);
+			
+			// Do not write a comma after the last tile ID of this row.
+			if (column < (UItileWidth - 1))
 				fprintf(POfileOut, ", ");
 		}
+		
+		// Do not write a comma after the last tile ID of the map.
+		if (row < (UItileHeight - 1))
+			fprintf(POfileOut, ",");
+			
+		// Check if we have to print a position marker (a comment with the row
+		// number every 10th row).
+		if ((UItileHeight >= 10) && (((row + 1) % 10) == 0))
+		{
+			// The last tile ID needs an additional space because it lacks a
+			// comma. Also, we insert spaces as needed before the number for
+			// alignment.
+			fprintf(POfileOut, "%s// <--- (%s%u)",
+			        (row < (UItileHeight - 1)) ? " " : "  ",
+			        ((UItileHeight >= 100) && ((row + 1) < 100)) ? " " : "",
+			        (row + 1));
+		}
+		
+		fprintf(POfileOut, "\n");
 	}
 }
