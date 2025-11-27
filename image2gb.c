@@ -13,22 +13,22 @@
 
 // CONSTANTS ///////////////////////////////////////////////////////////////////
 
-enum { IMAGE2GB_SENSITIVITY = GIMP_PROCEDURE_SENSITIVE_DRAWABLE }; /**< Which content this plug-in supports. */
+enum { IMAGE2GB_SENSITIVITY = GIMP_PROCEDURE_SENSITIVE_DRAWABLE }; ///< Which content this plug-in supports. */
 
-#define IMAGE2GB_BINARY_NAME "image2gb" /**< Name of the output binary. */
+#define IMAGE2GB_BINARY_NAME "image2gb" ///< Name of the output binary. */
 
-#define IMAGE2GB_PROCEDURE_MENU   "plug-in-image2gb-menu"   /**< Name of the procedure registered as menu entry.          */
-#define IMAGE2GB_PROCEDURE_EXPORT "plug-in-image2gb-export" /**< Name of the procedure registered as file export handler. */
+#define IMAGE2GB_PROCEDURE_MENU   "plug-in-image2gb-menu"   ///< Name of the procedure registered as menu entry.          */
+#define IMAGE2GB_PROCEDURE_EXPORT "plug-in-image2gb-export" ///< Name of the procedure registered as file export handler. */
 
-#define IMAGE2GB_MENU_PATH  "<Image>/Tools"        /**< Window area and menu path the plug-in will appear in.        */
-#define IMAGE2GB_MENU_LABEL "Game Boy (GBDK-2020)" /**< Entry that will appear in the menus and "Export as" dialog. */
+#define IMAGE2GB_MENU_PATH  "<Image>/Tools"        ///< Window area and menu path the plug-in will appear in.        */
+#define IMAGE2GB_MENU_LABEL "Game Boy (GBDK-2020)" ///< Entry that will appear in the menus and "Export as" dialog. */
 
-#define IMAGE2GB_ASSOCIATED_MIME_TYPE "text/plain" /**< MIME file type that will be associated with this plug-in. */
-#define IMAGE2GB_ASSOCIATED_EXTENSION "gbdk"       /**< File extension that will be associated with this plug-in. */
+#define IMAGE2GB_ASSOCIATED_MIME_TYPE "text/plain" ///< MIME file type that will be associated with this plug-in. */
+#define IMAGE2GB_ASSOCIATED_EXTENSION "gbdk"       ///< File extension that will be associated with this plug-in. */
 
-#define IMAGE2GB_PARAM_ASSET_NAME "asset-name" /**< Parameter ID of the asset name.  */
-#define IMAGE2GB_PARAM_FOLDER     "folder"     /**< Parameter ID of the output path. */
-#define IMAGE2GB_PARAM_BANK       "bank"       /**< Parameter ID of the bank number. */
+#define IMAGE2GB_PARAM_ASSET_NAME "asset-name" ///< Parameter ID of the asset name.  */
+#define IMAGE2GB_PARAM_FOLDER     "folder"     ///< Parameter ID of the output path. */
+#define IMAGE2GB_PARAM_BANK       "bank"       ///< Parameter ID of the bank number. */
 
 // Plug-in documentation and attribution strings.
 #define IMAGE2GB_DESCRIPTION_SHORT "Export image to Game Boy data"
@@ -44,9 +44,9 @@ char* SparamFolder;
 
 unsigned int UIparamBank;
 
-static GObjectClass* POparentClass; /**< Pointer to the parent class. */
+static GObjectClass* POparentClass; ///< Pointer to the parent class. */
 
-static GList* PLprocedures; /**< Pointer to the list of procedures this plug-in provides. */
+static GList* PLprocedures; ///< Pointer to the list of procedures this plug-in provides. */
 
 // FUNCTIONS ///////////////////////////////////////////////////////////////////
 
@@ -58,7 +58,8 @@ static GList* PLprocedures; /**< Pointer to the list of procedures this plug-in 
  * \return TRUE if the image is valid, FALSE otherwise.
  */
 static gboolean
-check_image(GimpImage* POimage, GimpRunMode ErunMode);
+check_image(GimpImage*  POimage,
+            GimpRunMode ErunMode);
 
 /** Shows a dialog window where the user can input the plug-in parameters.
  *
@@ -68,7 +69,8 @@ check_image(GimpImage* POimage, GimpRunMode ErunMode);
  * \return TRUE if the user clicked "OK", FALSE if he clicked "Cancel".
  */
 static gboolean
-show_dialog(GimpProcedure* POprocedure, GimpProcedureConfig* POconfig);
+show_dialog(GimpProcedure*       POprocedure,
+            GimpProcedureConfig* POconfig);
 
 /** Retrieves the current value of the plug-in parameters (asset name, output
  *  path and bank number) from the configuration, and stores them in global
@@ -80,7 +82,8 @@ show_dialog(GimpProcedure* POprocedure, GimpProcedureConfig* POconfig);
  * \return TRUE if the parameters are valid, FALSE otherwise.
  */
 static gboolean
-load_parameters(GimpProcedureConfig* POconfig, GimpRunMode ErunMode);
+load_parameters(GimpProcedureConfig* POconfig,
+                GimpRunMode          ErunMode);
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -129,10 +132,10 @@ image2gb_query_procedures(GimpPlugIn* POplugin)
 }
 
 static GimpProcedure*
-image2gb_create_procedure(GimpPlugIn* POplugin,
+image2gb_create_procedure(GimpPlugIn*  POplugin,
                           const gchar* Sname)
 {
-	GimpProcedure* POprocedure = NULL; /**< Pointer to the created GIMP procedure. */
+	GimpProcedure* POprocedure = NULL; ///< Pointer to the created GIMP procedure. */
 	
 	// 1) Menu procedure.
 	if (g_strcmp0(Sname, IMAGE2GB_PROCEDURE_MENU) == 0)
@@ -234,9 +237,9 @@ image2gb_run_menu(GimpProcedure*       POprocedure,
                   GimpProcedureConfig* POconfig,
                   gpointer             PrunData)
 {
-	GimpPDBStatusType EreturnValue; /**< Return value (PDB status) of this procedure. */
+	GimpPDBStatusType EreturnValue; ///< Return value (PDB status) of this procedure. */
 	
-	int IdrawablesCount; /**< How many drawables are currently selected in GIMP. */
+	int IdrawablesCount; ///< How many drawables are currently selected in GIMP. */
 	
 	IdrawablesCount = gimp_core_object_array_get_length((GObject**) Adrawables);
 	
@@ -318,11 +321,11 @@ image2gb_run_save(GimpProcedure*       POprocedure,
                   GimpProcedureConfig* POconfig,
                   gpointer             PrunData)
 {
-	GimpPDBStatusType EreturnValue; /**< Return value (PDB status) of this procedure. */
+	GimpPDBStatusType EreturnValue; ///< Return value (PDB status) of this procedure. */
 	
-	char* PCdotExtension; /**< Pointer to the location of the file extension dot (NULL if none). */
+	char* PCdotExtension; ///< Pointer to the location of the file extension dot (NULL if none). */
 	
-	GFile* POparamFolder = NULL; /**< Virtual file object for setting the "output path" parameter. */
+	GFile* POparamFolder = NULL; ///< Virtual file object for setting the "output path" parameter. */
 	
 	// Check if the image meets the requirements to be exported.
 	if (! check_image(POimage, ErunMode))
@@ -407,7 +410,8 @@ image2gb_dispose(GObject* Pobject)
 }
 
 void
-report_message(GimpRunMode ErunMode, const char* Smessage)
+report_message(GimpRunMode ErunMode,
+               const char* Smessage)
 {
 	if (ErunMode == GIMP_RUN_NONINTERACTIVE)
 		g_message("%s\n", Smessage);
@@ -416,11 +420,12 @@ report_message(GimpRunMode ErunMode, const char* Smessage)
 }
 
 static gboolean
-check_image(GimpImage* POimage, GimpRunMode ErunMode)
+check_image(GimpImage*  POimage,
+            GimpRunMode ErunMode)
 {
-	GimpPalette* POpalette; /**< Pointer to the image palette (NULL if not indexed). */
+	GimpPalette* POpalette; ///< Pointer to the image palette (NULL if not indexed). */
 	
-	char* SformattedMessage; /**< String used to print error messages. */
+	char* SformattedMessage; ///< String used to print error messages. */
 	
 	// Check that size is between 8x8 (1 tile) and 256x256 (32x32 tiles).
 	if ((gimp_image_get_width(POimage)     < IMAGE2GB_IMAGE_SIZE_MIN)
@@ -473,9 +478,10 @@ check_image(GimpImage* POimage, GimpRunMode ErunMode)
 }
 
 static gboolean
-show_dialog(GimpProcedure* POprocedure, GimpProcedureConfig* POconfig)
+show_dialog(GimpProcedure*       POprocedure,
+            GimpProcedureConfig* POconfig)
 {
-	GtkWidget* POdialog; /**< Plug-in GUI window (modeless). */
+	GtkWidget* POdialog; ///< Plug-in GUI window (modeless). */
 	
 	gimp_ui_init(IMAGE2GB_BINARY_NAME);
 	
@@ -491,11 +497,12 @@ show_dialog(GimpProcedure* POprocedure, GimpProcedureConfig* POconfig)
 }
 
 static gboolean
-load_parameters(GimpProcedureConfig* POconfig, GimpRunMode ErunMode)
+load_parameters(GimpProcedureConfig* POconfig,
+                GimpRunMode          ErunMode)
 {
-	char StruncatedName[IMAGE2GB_ASSET_NAME_MAX + 1] = {'\0'}; /**< String buffer for shortening the asset name if needed. */
+	char StruncatedName[IMAGE2GB_ASSET_NAME_MAX + 1] = {'\0'}; ///< String buffer for shortening the asset name if needed. */
 	
-	GFile* POparamFolder = NULL; /**< Virtual file object for retrieving the "output path" parameter. */
+	GFile* POparamFolder = NULL; ///< Virtual file object for retrieving the "output path" parameter. */
 	
 	// Retrieve the parameters.
 	g_object_get(POconfig,

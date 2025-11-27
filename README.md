@@ -1,9 +1,10 @@
 Palette
 =======
 
-`Game-Boy.gpl` is a GIMP color palette that contains the 4 colors the original
-Game Boy console uses (shades of green). If you prefer it, there is also another
-file, `Game-Boy-Pocket.gpl`, with the Game Boy Pocket palette (shades of gray).
+[Game-Boy.gpl](Game-Boy.gpl) is a GIMP color palette that contains the 4 colors
+the original Game Boy console uses (shades of green). If you prefer it, there is
+also another file, [Game-Boy-Pocket.gpl](Game-Boy-Pocket.gpl), with the Game Boy
+Pocket palette (shades of gray).
 
 Install
 -------
@@ -171,8 +172,9 @@ load the background. Of course, you will have to place the asset in the proper
 bank during compilation.
 
 The syntax and code formatting follow the same conventions I use in my source
-code, but it is very easy to modify if you want to. Edit `source_strings.h` and
-`image_export.h` to suit your needs.
+code, but it is very easy to modify if you want to. Edit
+[source_strings.h](source_strings.h) and [image_export.h](image_export.h) to
+suit your needs.
 
 Troubleshooting
 ===============

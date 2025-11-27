@@ -18,10 +18,10 @@ struct _Image2GB
 
 // VARIABLES ///////////////////////////////////////////////////////////////////
 
-extern char* SparamAssetName; /**< Current value of the "asset name" parameter.  */
-extern char* SparamFolder;    /**< Current value of the "output path" parameter. */
+extern char* SparamAssetName; ///< Current value of the "asset name" parameter.
+extern char* SparamFolder;    ///< Current value of the "output path" parameter.
 
-extern unsigned int UIparamBank; /**< Current value of the "bank number" parameter. */
+extern unsigned int UIparamBank; ///< Current value of the "bank number" parameter.
 
 // FUNCTIONS ///////////////////////////////////////////////////////////////////
 
@@ -118,4 +118,5 @@ image2gb_dispose(GObject* POinstance);
  * \param[in] Smessage String containing the message to show.
  */
 extern void
-report_message(GimpRunMode ErunMode, const char* Smessage);
+report_message(GimpRunMode ErunMode,
+               const char* Smessage);

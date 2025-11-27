@@ -17,17 +17,17 @@
 
 // CONSTANTS ///////////////////////////////////////////////////////////////////
 
-enum { IMAGE2GB_TILE_SIZE = 8U }; /**< Size of a tile, in pixels (any dimension). */
+enum { IMAGE2GB_TILE_SIZE = 8U }; ///< Size of a tile, in pixels (any dimension).
 
-enum { IMAGE2GB_IMAGE_TILES_VRAM_LIMIT = 256U }; /**< How many unique tiles will fit in the Game Boy's VRAM at a time. */
+enum { IMAGE2GB_IMAGE_TILES_VRAM_LIMIT = 256U }; ///< How many unique tiles will fit in the Game Boy's VRAM at a time.
 
-enum { IMAGE2GB_IMAGE_SIZE_MIN = IMAGE2GB_TILE_SIZE }; /**< Minimum acceptable image size, in pixels (any dimension). */
-enum { IMAGE2GB_IMAGE_SIZE_MAX =               256U }; /**< Maximum acceptable image size, in pixels (any dimension). */
+enum { IMAGE2GB_IMAGE_SIZE_MIN = IMAGE2GB_TILE_SIZE }; ///< Minimum acceptable image size, in pixels (any dimension).
+enum { IMAGE2GB_IMAGE_SIZE_MAX =               256U }; ///< Maximum acceptable image size, in pixels (any dimension).
 
-enum { IMAGE2GB_IMAGE_COLORS = 4U }; /**< How many colors there should be in the palette of an indexed image. */
+enum { IMAGE2GB_IMAGE_COLORS = 4U }; ///< How many colors there should be in the palette of an indexed image.
 
-enum { IMAGE2GB_ASSET_NAME_MAX =  32U }; /**< Maximum length of the asset name used for the C variable identifier. */
-enum { IMAGE2GB_BANK_MAX       = 255U }; /**< Last available ROM bank number.                                      */
+enum { IMAGE2GB_ASSET_NAME_MAX =  32U }; ///< Maximum length of the asset name used for the C variable identifier.
+enum { IMAGE2GB_BANK_MAX       = 255U }; ///< Last available ROM bank number.
 
 // DEFINITIONS /////////////////////////////////////////////////////////////////
 
@@ -41,9 +41,9 @@ typedef unsigned char ImageTile[IMAGE2GB_TILE_SIZE * IMAGE2GB_TILE_SIZE];
  */
 typedef struct DataTile
 {
-	uint16_t row[IMAGE2GB_TILE_SIZE]; /**< Array that stores the 8 pixel rows of this tile. */
+	uint16_t row[IMAGE2GB_TILE_SIZE]; ///< Array that stores the 8 pixel rows of this tile.
 	
-	gboolean duplicate; /**< Flag for marking this tile as a duplicate of another. */
+	gboolean duplicate; ///< Flag for marking this tile as a duplicate of another.
 } DataTile;
 
 // VARIABLES ///////////////////////////////////////////////////////////////////
@@ -58,9 +58,9 @@ static DataTile AdataTiles[(IMAGE2GB_IMAGE_SIZE_MAX   / IMAGE2GB_TILE_SIZE)
 static unsigned int AtileMap[(IMAGE2GB_IMAGE_SIZE_MAX   / IMAGE2GB_TILE_SIZE)
                              * (IMAGE2GB_IMAGE_SIZE_MAX / IMAGE2GB_TILE_SIZE)];
 
-static unsigned int UItileWidth;  /**< Horizontal size of the asset, in tiles. */
-static unsigned int UItileHeight; /**< Vertical size of the asset, in tiles.   */
-static unsigned int UItileCount;  /**< Total number of tiles the asset has.    */
+static unsigned int UItileWidth;  ///< Horizontal size of the asset, in tiles.
+static unsigned int UItileHeight; ///< Vertical size of the asset, in tiles.
+static unsigned int UItileCount;  ///< Total number of tiles the asset has.
 
 // FUNCTIONS ///////////////////////////////////////////////////////////////////
 
@@ -72,7 +72,8 @@ static unsigned int UItileCount;  /**< Total number of tiles the asset has.    *
  * \return The procedure run status.
  */
 static GimpPDBStatusType
-image2gb_export_image(GimpImage* POimage, GimpRunMode ErunMode);
+image2gb_export_image(GimpImage*  POimage,
+                      GimpRunMode ErunMode);
 
 /** Reads the GIMP image and populates the data tile array accordingly.
  *
@@ -82,7 +83,8 @@ image2gb_export_image(GimpImage* POimage, GimpRunMode ErunMode);
  * \return The procedure run status.
  */
 static GimpPDBStatusType
-image2gb_read_image_tiles(GimpImage* POimage, GimpRunMode ErunMode);
+image2gb_read_image_tiles(GimpImage*  POimage,
+                          GimpRunMode ErunMode);
 
 /** Parses an ImageTile (GIMP format) and computes a DataTile (Game Boy format).
  *
@@ -90,7 +92,8 @@ image2gb_read_image_tiles(GimpImage* POimage, GimpRunMode ErunMode);
  * \param[out] POdataTile  Pointer to the data tile to write.
  */
 static void
-image2gb_convert_tile(ImageTile* POimageTile, DataTile* POdataTile);
+image2gb_convert_tile(ImageTile* POimageTile,
+                      DataTile*  POdataTile);
 
 /** Checks all tiles and finds the duplicates, removing them from the tilemap.
  */
@@ -123,9 +126,10 @@ image2gb_write_tilemap(FILE* POfileOut);
 ////////////////////////////////////////////////////////////////////////////////
 
 static GimpPDBStatusType
-image2gb_export_image(GimpImage* POimage, GimpRunMode ErunMode)
+image2gb_export_image(GimpImage*  POimage,
+                      GimpRunMode ErunMode)
 {
-	GimpPDBStatusType EreturnValue; /**< Return value (PDB status) of this procedure. */
+	GimpPDBStatusType EreturnValue; ///< Return value (PDB status) of this procedure.
 	
 	// Compute image statistics.
 	UItileWidth  = (gimp_image_get_width(POimage)  / IMAGE2GB_TILE_SIZE);
@@ -158,13 +162,14 @@ image2gb_export_image(GimpImage* POimage, GimpRunMode ErunMode)
 }
 
 static GimpPDBStatusType
-image2gb_read_image_tiles(GimpImage* POimage, GimpRunMode ErunMode)
+image2gb_read_image_tiles(GimpImage*  POimage,
+                          GimpRunMode ErunMode)
 {
-	GimpDrawable** Adrawables; /**< Array of selected drawables (NULL if none). */
+	GimpDrawable** Adrawables; ///< Array of selected drawables (NULL if none).
 	
-	GeglBuffer* PObuffer; /**< Buffer for accessing pixel data. */
+	GeglBuffer* PObuffer; ///< Buffer for accessing pixel data.
 	
-	ImageTile OimageTile; /**< Array that stores the GIMP pixels of a tile (8x8). */
+	ImageTile OimageTile; ///< Array that stores the GIMP pixels of a tile (8x8).
 	
 	// Get the selected drawables from the image.
 	Adrawables = gimp_image_get_selected_drawables(POimage);
@@ -213,7 +218,8 @@ image2gb_read_image_tiles(GimpImage* POimage, GimpRunMode ErunMode)
 }
 
 static void
-image2gb_convert_tile(ImageTile* POimageTile, DataTile* POdataTile)
+image2gb_convert_tile(ImageTile* POimageTile,
+                      DataTile*  POdataTile)
 {
 	// Visual explanation: right now we are processing a single tile, which is a
 	// square 8x8 pixels area of the image, 64 pixels in total. We have 2
@@ -276,8 +282,8 @@ image2gb_convert_tile(ImageTile* POimageTile, DataTile* POdataTile)
 	//
 	// When all 64 pixels are processed, this tile is done.
 	
-	unsigned int UIbitPair = 1; /**< Current bit pair to write (we go left to right). */
-	unsigned int UItileRow = 0; /**< Current row being written in this tile.          */
+	unsigned int UIbitPair = 1; ///< Current bit pair to write (we go left to right).
+	unsigned int UItileRow = 0; ///< Current row being written in this tile.
 	
 	for (unsigned int pixel = 0; pixel < 64; ++pixel)
 	{
@@ -304,10 +310,10 @@ image2gb_convert_tile(ImageTile* POimageTile, DataTile* POdataTile)
 static void
 image2gb_check_duplicates(void)
 {
-	unsigned int UIduplicateCount     = 0; /**< Number of duplicate tiles that were found.                                  */
-	unsigned int UIpreviousDuplicates = 0; /**< Auxiliary variable for storing how many duplicates before the current tile. */
+	unsigned int UIduplicateCount     = 0; ///< Number of duplicate tiles that were found.
+	unsigned int UIpreviousDuplicates = 0; ///< Auxiliary variable for storing how many duplicates before the current tile.
 	
-	gboolean BisDuplicate; /**< Auxiliary variable for checking if a tile is duplicate. */
+	gboolean BisDuplicate; ///< Auxiliary variable for checking if a tile is duplicate.
 	
 	// Initialize count to the maximum possible number of tiles.
 	UItileCount = (UItileWidth * UItileHeight);
@@ -378,18 +384,18 @@ image2gb_check_duplicates(void)
 static GimpPDBStatusType
 image2gb_write_files(GimpRunMode ErunMode)
 {
-	FILE* POfileOut; /**< File handler for writing output. */
+	FILE* POfileOut; ///< File handler for writing output.
 	
-	char SfileName[PATH_MAX] = {0}; /**< Auxiliary string for composing the full file names. */
+	char SfileName[PATH_MAX] = {0}; ///< Auxiliary string for composing the full file names.
 	
-	char SnameLowercase[IMAGE2GB_ASSET_NAME_MAX + 1] = {0}; /**< Asset name, all lowercase. */
-	char SnameUppercase[IMAGE2GB_ASSET_NAME_MAX + 1] = {0}; /**< Asset name, all UPPERCASE. */
+	char SnameLowercase[IMAGE2GB_ASSET_NAME_MAX + 1] = {0}; ///< Asset name, all lowercase.
+	char SnameUppercase[IMAGE2GB_ASSET_NAME_MAX + 1] = {0}; ///< Asset name, all UPPERCASE.
 	
-	char* SbankSupport; /**< Output that will only be written if the asset is banked. */
+	char* SbankSupport; ///< Output that will only be written if the asset is banked.
 	
-	char* SformattedMessage; /**< String used to print error messages. */
+	char* SformattedMessage; ///< String used to print error messages.
 	
-	int Ierror; /**< Stores the last error code. */
+	int Ierror; ///< Stores the last error code.
 	
 	// When writing the final .c source file, the values will be in hexadecimal.
 	// The Game Boy expects the asset data as chars (8-bit). Each tile
@@ -529,7 +535,7 @@ image2gb_write_files(GimpRunMode ErunMode)
 static void
 image2gb_write_tile_data(FILE* POfileOut)
 {
-	unsigned int UIprintCount = 0; /**< Auxiliary variable to keep track of how many tiles we have written. */
+	unsigned int UIprintCount = 0; ///< Auxiliary variable to keep track of how many tiles we have written.
 	
 	// Print one tile per line.
 	for (unsigned int tile = 0; tile < (UItileWidth * UItileHeight); ++tile)
@@ -580,7 +586,7 @@ image2gb_write_tile_data(FILE* POfileOut)
 static void
 image2gb_write_tilemap(FILE* POfileOut)
 {
-	unsigned int UIspaces = 0; /**< How many spaces to write for padding. */
+	unsigned int UIspaces = 0; ///< How many spaces to write for padding.
 	
 	// Check if we have to print a heading row with position markers (a comment
 	// with the column number every 10th column).
